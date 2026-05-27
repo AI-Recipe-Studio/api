@@ -1,0 +1,95 @@
+syntax = "proto3";
+
+package post.v1;
+
+import "google/protobuf/duration.proto";
+import "google/protobuf/timestamp.proto";
+
+option go_package = "post/v1";
+
+enum PostType {
+  POST_TYPE_UNSPECIFIED = 0; // 선택되지 않은 경우 오류를 발생시킬것
+  POST_TYPE_VIDEO = 1; // 가로 영상 (16:9 비율)
+  POST_TYPE_VERTICAL_VIDEO = 2; // 세로 영상 (9:16 비율, 유투브의 Shorts 같은 영상들)
+  POST_TYPE_IMAGE = 3; // 이미지
+  POST_TYPE_TEXT = 4; // 텍스트
+  POST_TYPE_AUDIO = 5; // 음원
+  POST_TYPE_COMMUNITY = 6; // 커뮤니티 게시글 타입
+}
+
+// ContentFile은 게시글에 첨부된 미디어 파일(이미지, 영상, 텍스트, 오디오 등)의 메타데이터이다.
+message ContentFile {
+  string url = 1; // 미디어 파일의 접근 URL
+  int32 position = 2; // 노출의 순서 (여러개의 파일이 존재 할 시 처리를 위함, 1부터 시작)
+}
+
+// PublicPost는 일반 유저에게 노출되는 공용 API를 위한 Post 정보 모델이다.
+// 보안 및 개인정보 보호를 위해 작성자 본인만 봐야 하는 민감한 값은 제외된 상태이다.
+message PublicPost {
+  // [공통 필드] OwnerPost와 일치하는 부분의 필드 번호 및 필드 타입을 일치시킨다.
+
+  string post_id = 1; // Post 고유 식발자 (UUID v7)
+  string studio_uid = 2; // Post 작성 채널의 고유 uid (uuid 아님 혼동 금지)
+  PostType type = 3; // Post의 타입
+  string title = 4; // Post 제목
+  string body = 5; // Post 본문 내용
+  int64 comment_count = 6; // 총 댓글 수
+  int64 like_count = 7; // 총 좋아요 수
+  int64 view_count = 8; // 총 조회수
+  google.protobuf.Duration duration = 9; // 영상 콘텐츠인 경우 재생 시간 ( 나머지의 경우 기본값: 0)
+  repeated ContentFile content_files = 10; // 첨부된 미디어 파일 목록
+
+  google.protobuf.Timestamp created_at = 11; // 게시글 최초 생성 일시
+}
+
+// OwnerPost는 Post 작성자 본인(소유자) 및 관리자에게 노출되는 상세 데이터 모델이다.
+// 일반 유저에게는 숨겨지는 비공개 통계 데이터를 포함한다.
+message OwnerPost {
+  // [공통 필드] OwnerPost와 일치하는 부분의 필드 번호 및 필드 타입을 일치시킨다.
+
+  string post_id = 1; // Post 고유 식발자 (UUID v7)
+  string studio_uid = 2; // Post 작성 채널의 고유 uid (uuid 아님 혼동 금지)
+  PostType type = 3; // Post의 타입
+  string title = 4; // Post 제목
+  string body = 5; // Post 본문 내용
+  int64 comment_count = 6; // 총 댓글 수
+  int64 like_count = 7; // 총 좋아요 수
+  int64 view_count = 8; // 총 조회수
+  google.protobuf.Duration duration = 9; // 영상 콘텐츠인 경우 재생 시간 ( 나머지의 경우 기본값: 0)
+  repeated ContentFile content_files = 10; // 첨부된 미디어 파일 목록
+
+  // [ Owner 전용 필드 ]
+  bool is_published = 11; // 게시글 공개(발행) 여부 (false인 경우 임시 저장 또는 비공개 상태)
+  int64 unlike_count = 12; // 총 싫어요 수 (소유자 대시보드용, 외부 비노출)
+
+  google.protobuf.Timestamp created_at = 13; // 생성 일시
+  google.protobuf.Timestamp updated_at = 14; // 수정 일시
+  google.protobuf.Timestamp deleted_at = 15; // 삭제 일시
+}
+
+// Post는 조회 주체의 권한(소유 여부)에 따라 어떤 관점(View)으로 데이터를 채워 보낼지 결정하는 래퍼 메시지이다.
+//
+// **[설계 가이드라인]**
+// - 요청을 처리하는 Response 또는 리스트의 ListItem 레벨에서 'is_owner' 플래그를 추가 후,
+//   이 'view' 안의 'public_post' 또는 'owner_post' 중 조건에 맞는 단 하나만 직렬화하여 반환한다.
+//
+// 1. Post 단일인 경우
+// ```proto
+// message PostResponse {
+//   bool isOwner = 1;
+//   Post post = 2;
+// }
+// ```
+// 2. PostList 인 경우
+// ```proto
+// message PostResponse {
+//   bool isOwner = 1;
+//   repeated Post post = 2; // 내부는 PublicPost, OwnerPost 중 하나의 타입의 배열만 존재해야 한다.
+// }
+// ```
+message Post {
+  oneof view {
+    PublicPost public_post = 2;
+    OwnerPost owner_post = 3;
+  }
+}
