@@ -1,0 +1,50 @@
+syntax = "proto3";
+
+package hub.comment.v1;
+
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/AI-Recipe-Studio/api/hub/comment/v1";
+
+enum CommentStatus {
+  // 선택 안됨
+  COMMENT_STATUS_UNSPECIFIED = 0;
+  // 최초 게시 상태
+  COMMENT_STATUS_PUBLISHED = 1;
+  // 수정됨
+  COMMENT_STATUS_EDITED = 2;
+  // 어드민 및 시스템에 의해 숨김(블라인드) 처리됨
+  COMMENT_STATUS_HIDDEN = 3;
+  // 유저가 삭제함
+  COMMENT_STATUS_DELETED = 4;
+}
+
+// Comment는 Post 의 댓글이다.
+message Comment {
+  // 댓글의 고유 id
+  string comment_id = 1;
+  // 댓글이 달린 post의 id
+  string post_id = 2;
+  // 댓글을 작성한 스튜디오의 uid
+  string studio_uid = 3;
+  // 대댓글인 경우 부모 댓글의 아이디
+  string parent_comment_id = 4;
+  // 댓글 내용
+  string text = 5;
+  // 댓글의 상태
+  CommentStatus status = 6;
+  // 고정댓글인지 유무
+  // 고정 댓글의 경우 parent_comment_id 가 존재하지 않으며 depth가 1인 경우에만 가능
+  bool is_pinned = 7;
+  // 현재 댓글의 깊이
+  uint32 depth = 8;
+  // 좋아요 수
+  uint64 like_count = 9;
+  // 댓글에 표시할 스튜디오의 name
+  string studio_name = 10;
+
+  // 생성 일시
+  google.protobuf.Timestamp created_at = 11;
+  // 수정 일시
+  google.protobuf.Timestamp updated_at = 12;
+}
