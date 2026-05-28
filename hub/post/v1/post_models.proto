@@ -1,11 +1,11 @@
 syntax = "proto3";
 
-package post.v1;
+package hub.post.v1;
 
 import "google/protobuf/duration.proto";
 import "google/protobuf/timestamp.proto";
 
-option go_package = "post/v1";
+option go_package = "github.com/AI-Recipe-Studio/api/hub/post/v1";
 
 enum PostType {
   // 선택되지 않은 경우 오류를 발생시킬것
