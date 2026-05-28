@@ -90,19 +90,22 @@ message OwnerPost {
   // 첨부된 미디어 파일 목록
   repeated ContentFile content_files = 10;
 
-  // [ Owner 전용 필드 ]
+  // 생성 일시
+  google.protobuf.Timestamp created_at = 11;
+  // 수정 일시
+  google.protobuf.Timestamp updated_at = 12;
+
+  // -------------------------
+  // Owner 전용 필드
+  // -------------------------
 
   // 게시글 공개(발행) 여부 (false인 경우 임시 저장 또는 비공개 상태)
-  bool is_published = 11;
+  bool is_published = 51;
   // 총 싫어요 수 (소유자 대시보드용, 외부 비노출)
-  int64 unlike_count = 12;
+  int64 unlike_count = 52;
 
-  // 생성 일시
-  google.protobuf.Timestamp created_at = 13;
-  // 수정 일시
-  google.protobuf.Timestamp updated_at = 14;
   // 삭제 일시
-  google.protobuf.Timestamp deleted_at = 15;
+  google.protobuf.Timestamp deleted_at = 54;
 }
 
 // Post는 조회 주체의 권한(소유 여부)에 따라 어떤 관점(View)으로 데이터를 채워 보낼지 결정하는 래퍼 메시지이다.
