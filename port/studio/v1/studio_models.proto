@@ -29,7 +29,7 @@ enum StudioTapType {
   STUDIO_TAP_TYPE_IMAGE = 3;
   STUDIO_TAP_TYPE_TEXT = 4;
   STUDIO_TAP_TYPE_AUDIO = 5;
-  STUDIO_TAP_TYPE_PLAYLIST = 6;
+  STUDIO_TAP_TYPE_COLLECTION = 6;
   STUDIO_TAP_TYPE_COMMUNITY = 7; // 게시판
 }
 
@@ -140,30 +140,30 @@ message SubscribeInfo {
   string last_post_id = 4;
 }
 
-// PlaylistContent는 Playlist 의 구성 콘텐츠 정보이다.
-message PlaylistContent {
+// CollectionContent는 Collection의 구성 콘텐츠 정보이다.
+message CollectionContent {
   // Post 요약 정보
-  port.post.v1.PostSummery post_summery = 1;
+  port.post.v1.PostSummary post_summary = 1;
   // 콘텐츠 추가 일시
   google.protobuf.Timestamp created_at = 2;
 }
 
-enum PlaylistStatusType {
+enum CollectionStatusType {
   // 선택되지 않음 -> 명시적 오류 발생
-  PLAYLIST_STATUS_TYPE_UNSPECIFIED = 0;
+  COLLECTION_STATUS_TYPE_UNSPECIFIED = 0;
   // 공개 상태
-  PLAYLIST_STATUS_TYPE_PUBLIC = 1;
+  COLLECTION_STATUS_TYPE_PUBLIC = 1;
   // 비공개 상태 (나만 보기)
-  PLAYLIST_STATUS_TYPE_PRIVATE = 2;
+  COLLECTION_STATUS_TYPE_PRIVATE = 2;
   // 정지, 영구 제한 상태 (플랫폼 규정 위반으로 인해 관리자가 채널을 동결 시킨 상태)
-  PLAYLIST_STATUS_TYPE_BANNED = 3;
+  COLLECTION_STATUS_TYPE_BANNED = 3;
   // 삭제 상태 (유저가 직접 삭제)
-  PLAYLIST_STATUS_TYPE_DELETED = 4;
+  COLLECTION_STATUS_TYPE_DELETED = 4;
 }
 
-// PlaylistInfo는 재생목록 정보 이다.
-message Playlist {
-  // Playlist 명칭
+// Collection은 재생목록 정보 이다.
+message Collection {
+  // Collection 명칭
   string title = 1;
   // 설명
   string description = 2;
@@ -171,10 +171,14 @@ message Playlist {
   string studio_name = 3;
   // 개시한 스튜디오 uid
   string studio_uid = 4;
-  // Playlist의 상태
-  PlaylistStatusType status = 5;
+  // Collection의 상태
+  CollectionStatusType status = 5;
   // 재생 콘텐츠 목록
-  repeated PlaylistContent content_list = 6;
-  // Playlist 생성 일시
+  repeated CollectionContent content_list = 6;
+  // Collection 생성 일시
   google.protobuf.Timestamp created_at = 7;
+}
+
+message CollectionList {
+  repeated Collection collection_list = 1;
 }

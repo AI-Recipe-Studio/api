@@ -23,7 +23,7 @@ enum SearchType {
   // 음악
   SEARCH_TYPE_AUDIO = 6;
   // 재생 목록
-  SEARCH_TYPE_PLAYLIST = 7;
+  SEARCH_TYPE_COLLECTION = 7;
   // 게시판
   SEARCH_TYPE_COMMUNITY = 8;
 }
@@ -50,7 +50,7 @@ message SearchQuery {
   // 정렬 타입
   SearchPriorityType priority = 3;
   // 요청 아이템 크기
-  int64 size = 4;
+  uint32 size = 4;
   // 검색을 시작할 커서
   string cursor = 5;
 
@@ -68,7 +68,7 @@ message SearchResult {
   oneof view {
     port.post.v1.PostList post_list = 2;
     port.studio.v1.StudioList studio_list = 3;
-    port.studio.v1.Playlist playlist_list = 4;
+    port.studio.v1.CollectionList collection_list = 4;
   }
 
   // 다음 페이지가 존재하는 경우 다음 검색 커서를 반환한다.

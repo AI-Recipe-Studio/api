@@ -34,7 +34,7 @@ message Comment {
   // 고정댓글인지 유무
   // 고정 댓글의 경우 parent_comment_id 가 존재하지 않으며 depth가 1인 경우에만 가능
   bool is_pinned = 7;
-  // 현재 댓글의 깊이
+  // 현재 댓글의 깊이  (최상위 댓글은 1, 대댓글은 2, ...)
   uint32 depth = 8;
   // 좋아요 수
   uint64 like_count = 9;
