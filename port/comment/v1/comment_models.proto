@@ -1,10 +1,10 @@
 syntax = "proto3";
 
-package hub.comment.v1;
+package port.comment.v1;
 
 import "google/protobuf/timestamp.proto";
 
-option go_package = "github.com/AI-Recipe-Studio/api/hub/comment/v1";
+option go_package = "github.com/AI-Recipe-Studio/api/port/comment/v1";
 
 enum CommentStatus {
   // 선택 안됨
