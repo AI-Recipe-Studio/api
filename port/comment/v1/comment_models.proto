@@ -2,20 +2,8 @@ syntax = "proto3";
 
 package port.comment.v1;
 
+import "core/common/v1/common_models.proto";
 import "google/protobuf/timestamp.proto";
-
-enum CommentStatus {
-  // 선택 안됨
-  COMMENT_STATUS_UNSPECIFIED = 0;
-  // 최초 게시 상태
-  COMMENT_STATUS_PUBLISHED = 1;
-  // 수정됨
-  COMMENT_STATUS_EDITED = 2;
-  // 어드민 및 시스템에 의해 숨김(블라인드) 처리됨
-  COMMENT_STATUS_HIDDEN = 3;
-  // 유저가 삭제함
-  COMMENT_STATUS_DELETED = 4;
-}
 
 // Comment는 Post 의 댓글이다.
 message Comment {
@@ -30,7 +18,7 @@ message Comment {
   // 댓글 내용
   string text = 5;
   // 댓글의 상태
-  CommentStatus status = 6;
+  core.common.v1.UserContentStatusType status = 6;
   // 고정댓글인지 유무
   // 고정 댓글의 경우 parent_comment_id 가 존재하지 않으며 depth가 1인 경우에만 가능
   bool is_pinned = 7;

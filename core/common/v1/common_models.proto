@@ -1,0 +1,46 @@
+syntax = "proto3";
+
+package core.common.v1;
+
+// UserContentStatusType는 사용자에 의해 발행된 게시물(Post, Comment, Collection 등)에 대한 상태 이다.
+enum UserContentStatusType {
+  // 선택 안됨 -> 명시적 오류 발생 필요
+  USER_CONTENT_STATUS_TYPE_UNSPECIFIED = 0;
+
+  // --------------------------------------------------------
+  // [1~9] 초기 작성 및 시스템 처리 단계 (미완성/준비 상태)
+  // --------------------------------------------------------
+
+  // 유저가 업로드 중이거나 메타데이터를 임시 저장한 상태 (외부 미노출)
+  USER_CONTENT_STATUS_TYPE_DRAFT = 1;
+  // 플랫폼 파이프라인(트랜스코딩, 인코딩, 업로드 등)에서 처리 중인 상태
+  USER_CONTENT_STATUS_TYPE_PROCESSING = 2;
+  // 시스템 오류 또는 코덱 문제로 처리가 실패한 상태 (해당 상태의 경우 자동 재시도 로직에 의해 최대 2번 까지 재시도 예정)
+  USER_CONTENT_STATUS_TYPE_FAILED = 3;
+
+  // --------------------------------------------------------
+  // [10~19] 게시자(User) 주도의 상태 라이프사이클
+  // --------------------------------------------------------
+
+  // 정상적으로 서비스에 노출되는 최초 게시 상태
+  USER_CONTENT_STATUS_TYPE_PUBLIC = 10;
+  // 지정된 미래의 특정 시간에 자동으로 PUBLIC으로 전환될 예약 게시 상태 (공개 예고)
+  USER_CONTENT_STATUS_TYPE_SCHEDULED = 11;
+  // 게시자가 명시적으로 공개를 홀드/보류해 둔 상태
+  USER_CONTENT_STATUS_TYPE_PENDING_BY_USER = 12;
+  // 게시자가 나만 보려고 비공개 처리한 상태
+  USER_CONTENT_STATUS_TYPE_PRIVATE = 13;
+  // 게시자가 삭제 처리함
+  USER_CONTENT_STATUS_TYPE_DELETED = 14;
+
+  // --------------------------------------------------------
+  // [20~29] 플랫폼(Platform/Admin) 제어 및 제재 상태
+  // --------------------------------------------------------
+
+  // 저작권 필터링 시스템, 성인물 검수 등으로 인해 플랫폼이 잠시 보류한 상태
+  USER_CONTENT_STATUS_TYPE_PENDING_BY_PLATFORM = 20;
+  // 유저 신고 누적 등으로 인해 관리자 검수 전까지 임시 블라인드 처리된 상태
+  USER_CONTENT_STATUS_TYPE_HIDDEN = 21;
+  // 서비스 약관 및 저작권 위반이 확정되어 관리자가 영구 정지/차단한 상태
+  USER_CONTENT_STATUS_TYPE_BANNED = 22;
+}

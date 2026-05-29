@@ -8,24 +8,28 @@ import "port/studio/v1/studio_models.proto";
 
 // SearchType 검색 구분
 enum SearchType {
-  // 기본값 -> 초기에 가로 영상
+  // 설정 안됨 -> 명시적 오류 발생
   SEARCH_TYPE_UNSPECIFIED = 0;
+  // 기본값 -> 초기에는 가로 영상
+  SEARCH_TYPE_DEFAULT = 1;
   // 가로 영상
-  SEARCH_TYPE_VIDEO = 1;
+  SEARCH_TYPE_VIDEO = 2;
   // 세로 영상 (shorts 느낌)
-  SEARCH_TYPE_VERTICAL_VIDEO = 2;
+  SEARCH_TYPE_VERTICAL_VIDEO = 3;
   // 채널
-  SEARCH_TYPE_STUDIO = 3;
+  SEARCH_TYPE_STUDIO = 4;
   // 이미지
-  SEARCH_TYPE_IMAGE = 4;
-  // 텍스트
-  SEARCH_TYPE_TEXT = 5;
+  SEARCH_TYPE_IMAGE = 5;
+  // 도서
+  SEARCH_TYPE_BOOK = 6;
   // 음악
-  SEARCH_TYPE_AUDIO = 6;
+  SEARCH_TYPE_AUDIO = 7;
+  // 게임
+  SEARCH_TYPE_GAME = 8;
   // 재생 목록
-  SEARCH_TYPE_COLLECTION = 7;
+  SEARCH_TYPE_COLLECTION = 9;
   // 게시판
-  SEARCH_TYPE_COMMUNITY = 8;
+  SEARCH_TYPE_COMMUNITY = 10;
 }
 
 // SearchOrderType 우선순위 (정렬 기준)
@@ -44,6 +48,7 @@ enum SearchPriorityType {
 }
 
 message SearchQuery {
+  // 검색 쿼리
   string q = 1;
   // 검색 타입
   SearchType type = 2;
