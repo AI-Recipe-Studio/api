@@ -45,7 +45,7 @@ message StudioExternalLink {
 
 // PublicStudioInfo는 모두가 접근할 수 있는 게시 플랫폼의 스튜디오 정보이다.
 // 비즈니스 이메일의 경우 별도 요청을 통해 접근 할 수 있다.
-message PublicStudioInfo {
+message PublicStudio {
   // 스튜디오의 uid로 해당 스튜디오의 고유 id 이다.
   string uid = 1;
   // 스튜디오의 이름
@@ -76,7 +76,7 @@ message PublicStudioInfo {
 // OwnerStudioInfo는 소유자 및 관리자가 접근 할 수 있는 게시 플렛폼의 스튜디오 정보이다.
 //
 // 모든 정보가 표시된다.
-message OwnerStudioInfo {
+message OwnerStudio {
   // 스튜디오의 uid로 해당 스튜디오의 고유 id 이다.
   string uid = 1;
   // 스튜디오의 이름
@@ -112,11 +112,16 @@ message OwnerStudioInfo {
 }
 
 // StudioInfo는 스튜디오의 정보로 public 및 owner 유무에 따라 다른 정보를 받아 볼 수 있다.
-message StudioInfo {
+message Studio {
   oneof view {
-    PublicStudioInfo public_studio_info = 1;
-    OwnerStudioInfo owner_studio_info = 2;
+    PublicStudio public_studio_info = 1;
+    OwnerStudio owner_studio_info = 2;
   }
+}
+
+// 다중 스튜디오가 반환되는 경우는 Public 한경우밖에 존재하지 않는다.
+message StudioList {
+  repeated PublicStudio studio_list = 1;
 }
 
 // SubscribeInfo는 구독 정보이다.
@@ -157,7 +162,7 @@ enum PlaylistStatusType {
 }
 
 // PlaylistInfo는 재생목록 정보 이다.
-message PlaylistInfo {
+message Playlist {
   // Playlist 명칭
   string title = 1;
   // 설명
