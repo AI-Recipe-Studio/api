@@ -4,8 +4,6 @@ package port.comment.v1;
 
 import "google/protobuf/timestamp.proto";
 
-option go_package = "github.com/AI-Recipe-Studio/api/port/comment/v1";
-
 enum CommentStatus {
   // 선택 안됨
   COMMENT_STATUS_UNSPECIFIED = 0;

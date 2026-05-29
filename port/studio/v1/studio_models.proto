@@ -5,8 +5,6 @@ package port.studio.v1;
 import "google/protobuf/timestamp.proto";
 import "port/post/v1/post_models.proto";
 
-option go_package = "github.com/AI-Recipe-Studio/api/port/studio/v1";
-
 // 채널의 상태 정보가
 enum StudioStatusType {
   // 선택 되지 않음 -> 명시적 오류 발생 필요
