@@ -30,6 +30,20 @@ message ContentFile {
   int32 position = 2;
 }
 
+// AgeRestrictionType는 추후 연령 제한을 위한 필드이다.
+//
+// 플랫폼 정책에 따라 TEEN는 없을 수도 있다. (이경우 가입 연령이 15세 이상이 된다.)
+enum AgeRestrictionType {
+  // 기본값 -> 오류 발생 필요
+  AGE_RESTRICTION_TYPE_UNSPECIFIED = 0;
+  // 전체 허용
+  AGE_RESTRICTION_TYPE_ALL = 1;
+  // 청소년 (15세 이상)
+  AGE_RESTRICTION_TYPE_TEEN = 2;
+  // 성인 (19세 이상 - 추가 인증 필요)
+  AGE_RESTRICTION_TYPE_ADULT = 3;
+}
+
 // PublicPost는 일반 유저에게 노출되는 공용 API를 위한 Post 정보 모델이다.
 //
 // 보안 및 개인정보 보호를 위해 작성자 본인만 봐야 하는 민감한 값은 제외된 상태이다.
@@ -66,6 +80,8 @@ message PublicPost {
 
   // 썸네일 이미지 주소 -> Upload 된 Content file에서 선택함
   string thumbnail_image_url = 14;
+  // 해당 Post의 연령 제한
+  AgeRestrictionType age_restriction = 15;
 }
 
 // OwnerPost는 Post 작성자 본인(소유자) 및 관리자에게 노출되는 상세 데이터 모델이다.
@@ -104,6 +120,8 @@ message OwnerPost {
 
   // 썸네일 이미지 주소 -> Upload 된 Content file에서 선택함
   string thumbnail_image_url = 14;
+  // 해당 Post의 연령 제한
+  AgeRestrictionType age_restriction = 15;
 
   // -------------------------
   // Owner 전용 필드
@@ -139,14 +157,13 @@ message Post {
 
 // PostList Post의 응답타입과 Post 배열을 반환한다.
 message PostList {
-  bool is_owner = 1;
   repeated Post post_list = 2;
 }
 
 // PostSummery는 Post의 상세 정보가 필요하지 않을 떄 사용한다.
 //
 // 예를 들어 추천 영상의 리스트에는 위의 상세 필드들이 필요하지 않기 때문에 사용할 수 있다.
-message PostSummery {
+message PostSummary {
   // Post 고유 식발자
   string post_id = 1;
   // Post 작성 채널의 이름
@@ -161,6 +178,8 @@ message PostSummery {
   string body = 6;
   // 썸네일 이미지 주소 -> Upload 된 Content file에서 선택함
   string thumbnail_image_url = 7;
+  // 해당 Post의 연령 제한
+  AgeRestrictionType age_restriction = 8;
   // 영상 콘텐츠인 경우 재생 시간 ( 나머지의 경우 기본값: 0)
   google.protobuf.Duration duration = 10;
   // 첨부된 미디어 파일 목록
@@ -168,4 +187,8 @@ message PostSummery {
 
   // 게시글 최초 생성 일시
   google.protobuf.Timestamp created_at = 12;
+}
+
+message PostSummaryList {
+  repeated PostSummary post_summary_list = 1;
 }
