@@ -1,0 +1,137 @@
+syntax = "proto3";
+
+package port.studio.v1;
+
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/AI-Recipe-Studio/api/port/studio/v1";
+
+// 채널의 상태 정보가
+enum StudioStatusType {
+  // 선택 되지 않음 -> 명시적 오류 발생 필요
+  STUDIO_STATUS_TYPE_UNSPECIFIED = 0;
+  // 준비준 상태 (채널은 개설 되었지만, 아직 일반 유저에게 공개되지 않는 초기 상태)
+  STUDIO_STATUS_TYPE_PREPARING = 1;
+  // 활성화 상태  (모든 설정이 완료되고 정상저긍로 활동 중인 상태)
+  STUDIO_STATUS_TYPE_ACTIVE = 2;
+  // 활동 제한 / 경고 상태
+  STUDIO_STATUS_TYPE_RESTRICTED = 3;
+  // 정지, 영구 제한 상태 (플랫폼 규정 위반으로 인해 관리자가 채널을 동결 시킨 상태)
+  STUDIO_STATUS_TYPE_BANNED = 4;
+  // 삭제 대기 상태
+  STUDIO_STATUS_TYPE_DELETED = 5;
+}
+
+// StudioTapType은 해당 스튜디오에서 사용가능한 탭들의 타입 Enum 값 이다.
+enum StudioTapType {
+  STUDIO_TAP_TYPE_UNSPECIFIED = 0;
+  STUDIO_TAP_TYPE_VIDEO = 1;
+  STUDIO_TAP_TYPE_VERTICAL_VIDEO = 2;
+  STUDIO_TAP_TYPE_IMAGE = 3;
+  STUDIO_TAP_TYPE_TEXT = 4;
+  STUDIO_TAP_TYPE_AUDIO = 5;
+  STUDIO_TAP_TYPE_PLAYLIST = 6;
+  STUDIO_TAP_TYPE_COMMUNITY = 7; // 게시판
+}
+
+// StudioExternalLink는 스튜디오에서 첨부할 외부 링크 필드이다.
+//
+// ico의 경우 프론트엔드에서 동적으로 파싱한다.
+message StudioExternalLink {
+  // 링크의 url
+  string url = 1;
+  // 링크 제목 -> 사용자가 입력한 필드이다.
+  string title = 2;
+}
+
+// PublicStudioInfo는 모두가 접근할 수 있는 게시 플랫폼의 스튜디오 정보이다.
+// 비즈니스 이메일의 경우 별도 요청을 통해 접근 할 수 있다.
+message PublicStudioInfo {
+  // 스튜디오의 uid로 해당 스튜디오의 고유 id 이다.
+  string uid = 1;
+  // 스튜디오의 이름
+  string name = 2;
+  // 설명
+  string description = 3;
+  // 위치한 국가
+  string region = 4;
+  // 구독자 수
+  int64 sub_count = 5;
+  // Post 수
+  int64 post_count = 6;
+  // 아바타 이미지 url -> 원형 이미지 url 이다.
+  string avatar_image_url = 7;
+  // 배너 이미지 url
+  string banner_image_url = 8;
+  // 채널의 상태
+  StudioStatusType status = 9;
+  // 스튜디오에 존재하는 탭의 배열로 "홈"을 제외한 나머지이다.
+  repeated StudioTapType tabs = 10;
+  // 스튜디오의 description 필드 아로 아래 위치하는 외부 링크 필드이다.
+  repeated StudioExternalLink external_links = 11;
+
+  // 게시 플렛폼에서의 스튜디오 생성 일시
+  google.protobuf.Timestamp created_at = 12;
+}
+
+// OwnerStudioInfo는 소유자 및 관리자가 접근 할 수 있는 게시 플렛폼의 스튜디오 정보이다.
+//
+// 모든 정보가 표시된다.
+message OwnerStudioInfo {
+  // 스튜디오의 uid로 해당 스튜디오의 고유 id 이다.
+  string uid = 1;
+  // 스튜디오의 이름
+  string name = 2;
+  // 설명
+  string description = 3;
+  // 위치한 국가
+  string region = 4;
+  // 구독자 수
+  int64 sub_count = 5;
+  // Post 수
+  int64 post_count = 6;
+  // 아바타 이미지 url -> 원형 이미지 url 이다.
+  string avatar_image_url = 7;
+  // 배너 이미지 url
+  string banner_image_url = 8;
+  // 채널의 상태
+  StudioStatusType status = 9;
+  // 스튜디오에 존재하는 탭의 배열로 "홈"을 제외한 나머지이다.
+  repeated StudioTapType tabs = 10;
+  // 스튜디오의 description 필드 아로 아래 위치하는 외부 링크 필드이다.
+  repeated StudioExternalLink external_links = 11;
+
+  // 게시 플렛폼에서의 스튜디오 생성 일시
+  google.protobuf.Timestamp created_at = 12;
+
+  // -------------------------
+  // Owner 전용 필드
+  // -------------------------
+
+  // 비즈니스 이메일 주소
+  string business_email = 51;
+}
+
+// StudioInfo는 스튜디오의 정보로 public 및 owner 유무에 따라 다른 정보를 받아 볼 수 있다.
+message StudioInfo {
+  oneof view {
+    PublicStudioInfo public_studio_info = 1;
+    OwnerStudioInfo owner_studio_info = 2;
+  }
+}
+
+// SubscribeInfo는 구독 정보이다.
+//
+// 본인의 구독 정보를 확인하는데 사용한다. (타 채널의 구독 정보를 확인할 수는 없다.)
+message SubscribeInfo {
+  // 구독한 채널 명칭
+  string name = 1;
+  // 구독한 채널의 uid
+  string uid = 2;
+  // 구독한 채널의 아바타 이미지 주소
+  string avatar_image_url = 3;
+  // 마지막 Post id
+  //
+  // 해당 Post id 를 기반으로 추후 새로운 영상 유무등을 표시할 때 사용할 예정
+  string last_post_id = 4;
+}
