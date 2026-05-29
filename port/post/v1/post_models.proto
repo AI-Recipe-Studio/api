@@ -53,7 +53,7 @@ enum AgeRestrictionType {
 message PublicPost {
   // [공통 필드] OwnerPost와 일치하는 부분의 필드 번호 및 필드 타입을 일치시킨다.
 
-  // Post 고유 식발자
+  // 고유 id
   string post_id = 1;
   // Post 작성 채널의 고유 uid (post_id 아님 혼동 금지)
   string studio_uid = 2;
@@ -96,7 +96,7 @@ message PublicPost {
 message OwnerPost {
   // [공통 필드] OwnerPost와 일치하는 부분의 필드 번호 및 필드 타입을 일치시킨다.
 
-  // Post 고유 식발자
+  // 고유 id
   string post_id = 1;
   // Post 작성 채널의 고유 uid (post_id 아님 혼동 금지)
   string studio_uid = 2;
@@ -152,6 +152,7 @@ message OwnerPost {
 // message PostResponse {
 //   Post post = 1;
 // }
+// ```
 message Post {
   oneof view {
     PublicPost public_post = 2;
@@ -164,11 +165,11 @@ message PostList {
   repeated Post post_list = 2;
 }
 
-// PostSummery는 검색 등 Post의 상세 정보가 아닌 요약 정보가 필요한 곳에서 사용한다.
+// PostSummary는 검색 등 Post의 상세 정보가 아닌 요약 정보가 필요한 곳에서 사용한다.
 //
 // 사용 예: 검색, 재생목록, 스튜디오의 영상 목록 등
 message PostSummary {
-  // Post 고유 식발자
+  // 고유 id
   string post_id = 1;
   // Post 작성 채널의 이름
   string studio_name = 2;
