@@ -81,11 +81,13 @@ message PublicPost {
   AgeRestrictionType age_restriction = 13;
   // 상태 정보
   core.common.v1.UserContentStatusType status = 14;
+  // 미디어 프로세싱 상태 정보
+  core.common.v1.MediaProcessingStatusType media_processing_status = 15;
 
   // 게시글 최초 생성 일시
-  google.protobuf.Timestamp created_at = 15;
+  google.protobuf.Timestamp created_at = 16;
   // 수정 일시
-  google.protobuf.Timestamp updated_at = 16;
+  google.protobuf.Timestamp updated_at = 17;
 }
 
 // OwnerPost는 Post 작성자 본인(소유자) 및 관리자에게 노출되는 상세 데이터 모델이다.
@@ -122,23 +124,23 @@ message OwnerPost {
   AgeRestrictionType age_restriction = 13;
   // 상태 정보
   core.common.v1.UserContentStatusType status = 14;
+  // 미디어 프로세싱 상태 정보
+  core.common.v1.MediaProcessingStatusType media_processing_status = 15;
 
   // 게시글 최초 생성 일시
-  google.protobuf.Timestamp created_at = 15;
+  google.protobuf.Timestamp created_at = 16;
   // 수정 일시
-  google.protobuf.Timestamp updated_at = 16;
+  google.protobuf.Timestamp updated_at = 17;
 
   // -------------------------
   // Owner 전용 필드
   // -------------------------
 
-  // 게시글 공개(발행) 여부 (false인 경우 임시 저장 또는 비공개 상태)
-  bool is_published = 51;
   // 총 싫어요 수 (소유자 대시보드용, 외부 비노출)
-  int64 unlike_count = 52;
+  int64 unlike_count = 50;
 
   // 삭제 일시
-  google.protobuf.Timestamp deleted_at = 54;
+  google.protobuf.Timestamp deleted_at = 55;
 }
 
 // Post는 조회 주체의 권한(소유 여부)에 따라 어떤 관점(View)으로 데이터를 채워 보낼지 결정하는 래퍼 메시지이다.
@@ -188,9 +190,11 @@ message PostSummary {
   repeated ContentFile content_files = 11;
   // 상태 정보
   core.common.v1.UserContentStatusType status = 12;
+  // 미디어 프로세싱 상태 정보
+  core.common.v1.MediaProcessingStatusType media_processing_status = 13;
 
   // 게시글 최초 생성 일시
-  google.protobuf.Timestamp created_at = 13;
+  google.protobuf.Timestamp created_at = 14;
 }
 
 message PostSummaryList {
