@@ -162,7 +162,7 @@ message Post {
 
 // PostList Post의 응답타입과 Post 배열을 반환한다.
 message PostList {
-  repeated Post post_list = 2;
+  repeated Post items = 1;
 }
 
 // PostSummary는 검색 등 Post의 상세 정보가 아닌 요약 정보가 필요한 곳에서 사용한다.
@@ -199,5 +199,5 @@ message PostSummary {
 }
 
 message PostSummaryList {
-  repeated PostSummary post_summary_list = 1;
+  repeated PostSummary items = 1;
 }

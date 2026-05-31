@@ -124,7 +124,7 @@ message Studio {
 
 // 다중 스튜디오가 반환되는 경우는 Public 한경우밖에 존재하지 않는다.
 message StudioList {
-  repeated PublicStudio studio_list = 1;
+  repeated PublicStudio items = 1;
 }
 
 // SubscribeInfo는 구독 정보이다.
@@ -141,14 +141,6 @@ message SubscribeInfo {
   //
   // 해당 Post id 를 기반으로 추후 새로운 영상 유무등을 표시할 때 사용할 예정
   string last_post_id = 4;
-}
-
-// CollectionContent는 Collection의 구성 콘텐츠 정보이다.
-message CollectionContent {
-  // Post 요약 정보
-  port.post.v1.PostSummary post_summary = 1;
-  // 콘텐츠 추가 일시
-  google.protobuf.Timestamp created_at = 2;
 }
 
 // Collection은 사용자 콘텐츠의 모음이다.
@@ -168,12 +160,14 @@ message Collection {
   // 상태
   core.common.v1.UserContentStatusType status = 6;
   // 재생 콘텐츠 목록
-  repeated CollectionContent content_list = 7;
+  port.post.v1.PostSummaryList post_summary_list = 7;
 
-  // Collection 생성 일시
+  // 생성 일시
   google.protobuf.Timestamp created_at = 10;
+  // 수정 일시
+  google.protobuf.Timestamp updated_at = 11;
 }
 
 message CollectionList {
-  repeated Collection collection_list = 1;
+  repeated Collection items = 1;
 }
