@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+package port.comment.v1;
+
+import "core/common/v1/common_models.proto";
+import "google/protobuf/timestamp.proto";
+
+// Comment는 Post 의 댓글이다.
+message Comment {
+  // 댓글의 고유 id
+  string comment_id = 1;
+  // 댓글이 달린 post의 id
+  string post_id = 2;
+  // 댓글을 작성한 스튜디오의 uid
+  string studio_uid = 3;
+  // 대댓글인 경우 부모 댓글의 아이디
+  string parent_comment_id = 4;
+  // 댓글 내용
+  string text = 5;
+  // 댓글의 상태
+  core.common.v1.UserContentStatusType status = 6;
+  // 고정댓글인지 유무
+  // 고정 댓글의 경우 parent_comment_id 가 존재하지 않으며 depth가 1인 경우에만 가능
+  bool is_pinned = 7;
+  // 현재 댓글의 깊이  (최상위 댓글은 1, 대댓글은 2, ...)
+  uint32 depth = 8;
+  // 좋아요 수
+  uint64 like_count = 9;
+  // 댓글에 표시할 스튜디오의 name
+  string studio_name = 10;
+
+  // 생성 일시
+  google.protobuf.Timestamp created_at = 11;
+  // 수정 일시
+  google.protobuf.Timestamp updated_at = 12;
+}

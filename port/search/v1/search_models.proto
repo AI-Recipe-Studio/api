@@ -1,0 +1,81 @@
+syntax = "proto3";
+
+package port.search.v1;
+
+import "google/protobuf/timestamp.proto";
+import "port/post/v1/post_models.proto";
+import "port/studio/v1/studio_models.proto";
+
+// SearchType 검색 구분
+enum SearchType {
+  // 설정 안됨 -> 명시적 오류 발생
+  SEARCH_TYPE_UNSPECIFIED = 0;
+  // 기본값 -> 초기에는 가로 영상
+  SEARCH_TYPE_DEFAULT = 1;
+  // 가로 영상
+  SEARCH_TYPE_VIDEO = 2;
+  // 세로 영상 (shorts 느낌)
+  SEARCH_TYPE_VERTICAL_VIDEO = 3;
+  // 채널
+  SEARCH_TYPE_STUDIO = 4;
+  // 이미지
+  SEARCH_TYPE_IMAGE = 5;
+  // 도서
+  SEARCH_TYPE_BOOK = 6;
+  // 음악
+  SEARCH_TYPE_AUDIO = 7;
+  // 게임
+  SEARCH_TYPE_GAME = 8;
+  // 재생 목록
+  SEARCH_TYPE_COLLECTION = 9;
+  // 게시판
+  SEARCH_TYPE_COMMUNITY = 10;
+}
+
+// SearchOrderType 우선순위 (정렬 기준)
+enum SearchPriorityType {
+  // 관련성 - 기본값
+  SEARCH_PRIORITY_TYPE_UNSPECIFIED = 0;
+  // 인기도 내림차순
+  SEARCH_PRIORITY_TYPE_POPULARITY_DESC = 1;
+  // 조회수 내림차순
+  SEARCH_PRIORITY_TYPE_VIEW_COUNT_DESC = 2;
+
+  // 인기도 오름차순
+  SEARCH_PRIORITY_TYPE_POPULARITY_ASC = 11;
+  // 조회수 오름차순
+  SEARCH_PRIORITY_TYPE_VIEW_COUNT_ASC = 12;
+}
+
+message SearchQuery {
+  // 검색 쿼리
+  string q = 1;
+  // 검색 타입
+  SearchType type = 2;
+  // 정렬 타입
+  SearchPriorityType priority = 3;
+  // 요청 아이템 크기
+  uint32 size = 4;
+  // 검색을 시작할 커서
+  string cursor = 5;
+
+  // 특정 날짜 이후 검색 조건
+  google.protobuf.Timestamp after_at = 11;
+  // 특정 날짜 이전 검색 조건
+  google.protobuf.Timestamp before_at = 10;
+}
+
+message SearchResult {
+  // 검색에 사용된 타입을 반환한다.
+  SearchType type = 1;
+
+  // oneof 를 사용하여 type에 해당하는 결과를 반환한다.
+  oneof view {
+    port.post.v1.PostList post_list = 2;
+    port.studio.v1.StudioList studio_list = 3;
+    port.studio.v1.CollectionList collection_list = 4;
+  }
+
+  // 다음 페이지가 존재하는 경우 다음 검색 커서를 반환한다.
+  string next_cursor = 10;
+}

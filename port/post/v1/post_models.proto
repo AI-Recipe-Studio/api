@@ -1,0 +1,203 @@
+syntax = "proto3";
+
+package port.post.v1;
+
+import "core/common/v1/common_models.proto";
+import "google/protobuf/duration.proto";
+import "google/protobuf/timestamp.proto";
+
+enum PostType {
+  // 선택되지 않은 경우 오류를 발생시킬것
+  POST_TYPE_UNSPECIFIED = 0;
+  // 가로 영상 (16:9 비율)
+  POST_TYPE_VIDEO = 1;
+  // 세로 영상 (9:16 비율, 유투브의 Shorts 같은 영상들)
+  POST_TYPE_VERTICAL_VIDEO = 2;
+  // 이미지
+  POST_TYPE_IMAGE = 3;
+  // 도서류
+  POST_TYPE_BOOK = 4;
+  // 음원
+  POST_TYPE_AUDIO = 5;
+  // 커뮤니티 게시글 타입
+  POST_TYPE_COMMUNITY = 6;
+  // 게임
+  POST_TYPE_GAME = 7;
+}
+
+// ContentFile은 게시글에 첨부된 미디어 파일(이미지, 영상, 텍스트, 오디오 등)의 메타데이터이다.
+message ContentFile {
+  // 미디어 파일의 접근 URL
+  string url = 1;
+  // 노출의 순서 (여러개의 파일이 존재 할 시 처리를 위함, 1부터 시작)
+  int32 position = 2;
+}
+
+// AgeRestrictionType는 추후 연령 제한을 위한 필드이다.
+//
+// 플랫폼 정책에 따라 TEEN는 없을 수도 있다. (이경우 가입 연령이 15세 이상이 된다.)
+enum AgeRestrictionType {
+  // 기본값 -> 오류 발생 필요
+  AGE_RESTRICTION_TYPE_UNSPECIFIED = 0;
+  // 전체 허용
+  AGE_RESTRICTION_TYPE_ALL = 1;
+  // 청소년 (15세 이상)
+  AGE_RESTRICTION_TYPE_TEEN = 2;
+  // 성인 (19세 이상 - 추가 인증 필요)
+  AGE_RESTRICTION_TYPE_ADULT = 3;
+}
+
+// PublicPost는 일반 유저에게 노출되는 공용 API를 위한 Post 정보 모델이다.
+//
+// 보안 및 개인정보 보호를 위해 작성자 본인만 봐야 하는 민감한 값은 제외된 상태이다.
+message PublicPost {
+  // [공통 필드] OwnerPost와 일치하는 부분의 필드 번호 및 필드 타입을 일치시킨다.
+
+  // 고유 id
+  string post_id = 1;
+  // Post 작성 채널의 고유 uid (post_id 아님 혼동 금지)
+  string studio_uid = 2;
+  // Post 작성 채널의 이름
+  string studio_name = 3;
+  // Post의 타입
+  PostType type = 4;
+  // Post 제목
+  string title = 5;
+  // Post 설명 (=더보기)
+  string description = 6;
+  // 총 댓글 수
+  int64 comment_count = 7;
+  // 총 좋아요 수
+  int64 like_count = 8;
+  // 총 조회수
+  int64 view_count = 9;
+  // 영상 콘텐츠인 경우 재생 시간 ( 나머지의 경우 기본값: 0)
+  google.protobuf.Duration duration = 10;
+  // 첨부된 미디어 파일 목록
+  repeated ContentFile content_files = 11;
+  // 썸네일 이미지 주소 -> Upload 된 Content file에서 선택함
+  string thumbnail_image_url = 12;
+  // 해당 Post의 연령 제한
+  AgeRestrictionType age_restriction = 13;
+  // 상태 정보
+  core.common.v1.UserContentStatusType status = 14;
+  // 미디어 프로세싱 상태 정보
+  core.common.v1.MediaProcessingStatusType media_processing_status = 15;
+
+  // 게시글 최초 생성 일시
+  google.protobuf.Timestamp created_at = 16;
+  // 수정 일시
+  google.protobuf.Timestamp updated_at = 17;
+}
+
+// OwnerPost는 Post 작성자 본인(소유자) 및 관리자에게 노출되는 상세 데이터 모델이다.
+//
+// 일반 유저에게는 숨겨지는 비공개 통계 데이터를 포함한다.
+message OwnerPost {
+  // [공통 필드] OwnerPost와 일치하는 부분의 필드 번호 및 필드 타입을 일치시킨다.
+
+  // 고유 id
+  string post_id = 1;
+  // Post 작성 채널의 고유 uid (post_id 아님 혼동 금지)
+  string studio_uid = 2;
+  // Post 작성 채널의 이름
+  string studio_name = 3;
+  // Post의 타입
+  PostType type = 4;
+  // Post 제목
+  string title = 5;
+  // Post 설명 (=더보기)
+  string description = 6;
+  // 총 댓글 수
+  int64 comment_count = 7;
+  // 총 좋아요 수
+  int64 like_count = 8;
+  // 총 조회수
+  int64 view_count = 9;
+  // 영상 콘텐츠인 경우 재생 시간 ( 나머지의 경우 기본값: 0)
+  google.protobuf.Duration duration = 10;
+  // 첨부된 미디어 파일 목록
+  repeated ContentFile content_files = 11;
+  // 썸네일 이미지 주소 -> Upload 된 Content file에서 선택함
+  string thumbnail_image_url = 12;
+  // 해당 Post의 연령 제한
+  AgeRestrictionType age_restriction = 13;
+  // 상태 정보
+  core.common.v1.UserContentStatusType status = 14;
+  // 미디어 프로세싱 상태 정보
+  core.common.v1.MediaProcessingStatusType media_processing_status = 15;
+
+  // 게시글 최초 생성 일시
+  google.protobuf.Timestamp created_at = 16;
+  // 수정 일시
+  google.protobuf.Timestamp updated_at = 17;
+
+  // -------------------------
+  // Owner 전용 필드
+  // -------------------------
+
+  // 총 싫어요 수 (소유자 대시보드용, 외부 비노출)
+  int64 unlike_count = 50;
+
+  // 삭제 일시
+  google.protobuf.Timestamp deleted_at = 55;
+}
+
+// Post는 조회 주체의 권한(소유 여부)에 따라 어떤 관점(View)으로 데이터를 채워 보낼지 결정하는 래퍼 메시지이다.
+//
+// **[설계 가이드라인]**
+//
+// 1. Post 단일인 경우
+// ```proto
+// message PostResponse {
+//   Post post = 1;
+// }
+// ```
+message Post {
+  oneof view {
+    PublicPost public_post = 2;
+    OwnerPost owner_post = 3;
+  }
+}
+
+// PostList Post의 응답타입과 Post 배열을 반환한다.
+message PostList {
+  repeated Post items = 1;
+}
+
+// PostSummary는 검색 등 Post의 상세 정보가 아닌 요약 정보가 필요한 곳에서 사용한다.
+//
+// 사용 예: 검색, 재생목록, 스튜디오의 영상 목록 등
+message PostSummary {
+  // 고유 id
+  string post_id = 1;
+  // Post 작성 채널의 이름
+  string studio_name = 2;
+  // Post의 타입
+  PostType type = 3;
+  // Post 제목
+  string title = 4;
+  // 총 조회수
+  int64 view_count = 5;
+  // Post 설명 (=더보기)
+  string description = 6;
+  // 썸네일 이미지 주소 -> Upload 된 Content file에서 선택함
+  string thumbnail_image_url = 7;
+  // 해당 Post의 연령 제한
+  AgeRestrictionType age_restriction = 8;
+  // 영상 콘텐츠인 경우 재생 시간 ( 나머지의 경우 기본값: 0)
+  google.protobuf.Duration duration = 10;
+  // 첨부된 미디어 파일 목록
+  repeated ContentFile content_files = 11;
+  // 상태 정보
+  core.common.v1.UserContentStatusType status = 12;
+  // 미디어 프로세싱 상태 정보
+  core.common.v1.MediaProcessingStatusType media_processing_status = 13;
+
+  // 게시글 최초 생성 일시
+  google.protobuf.Timestamp created_at = 14;
+}
+
+message PostSummaryList {
+  repeated PostSummary items = 1;
+}
