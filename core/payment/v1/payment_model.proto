@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package core.payment.v1;
+
+enum PaymentGatewayType {
+  PAYMENT_GATEWAY_TYPE_UNSPECIFIED = 0;
+  PAYMENT_GATEWAY_TYPE_POLAR = 1;
+}
+
+// PG 정보
+message PaymentGatewayInfo {
+  string account_id = 1;
+  // PG사 정보
+  PaymentGatewayType type = 2;
+  // 해당 플렛폼에서 할당된 결제 id
+  // POLAR 같은 포인트 관리가 탑제된 서비스의 경우 필요함
+  string id = 3;
+  // 결제 우선 순위
+  uint32 priority = 4;
+}

@@ -1,0 +1,38 @@
+syntax = "proto3";
+
+package core.auth.v1;
+
+import "core/payment/v1/payment_model.proto";
+import "google/protobuf/timestamp.proto";
+
+// 유저 계정의 활성화 및 제재 상태를 정의하는 유형입니다.
+enum AccountStatusType {
+  // 상태가 지정되지 않은 기본값입니다.
+  ACCOUNT_STATUS_TYPE_UNSPECIFIED = 0;
+  // 정상적으로 서비스를 이용 중인 활성 유저 상태입니다.
+  ACCOUNT_STATUS_TYPE_ACTIVE = 1;
+  // 장기간 미접속으로 인해 데이터가 분리 보관된 휴면 유저 상태입니다.
+  ACCOUNT_STATUS_TYPE_DORMANT = 2;
+  // 계정 비활성화(oAuth 인증 실패 등 )
+  ACCOUNT_STATUS_TYPE_INACTIVE = 3;
+  // 가이드라인 위반으로 인해 계정이 일시 정지된 상태입니다.
+  ACCOUNT_STATUS_TYPE_SUSPENDED = 10;
+  // 심각한 위반으로 인해 계정이 영구 정지(퇴출)된 상태입니다.
+  ACCOUNT_STATUS_TYPE_BANNED = 11;
+  // 유저가 스스로 탈퇴를 신청하여 삭제 대기 중이거나 삭제된 상태입니다.
+  ACCOUNT_STATUS_TYPE_DELETED = 12;
+}
+
+message AccountInfo {
+  string id = 1;
+  string email = 2;
+  string avatar_image_url = 3;
+  // 계정 상태
+  AccountStatusType status = 4;
+  // 결제 정보 연동
+  //  core.payment.v1.PaymentInfo payment_info = 5;
+
+  google.protobuf.Timestamp created_at = 10;
+  google.protobuf.Timestamp updated_at = 11;
+  google.protobuf.Timestamp deleted_at = 12;
+}
