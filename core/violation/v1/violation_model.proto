@@ -1,0 +1,170 @@
+syntax = "proto3";
+
+package core.violation.v1;
+
+import "google/protobuf/timestamp.proto";
+
+// ViolationCodeType는 제제 코드로 실제 사용자가 위반한 내용에 대한 코드이다.
+enum ViolationCodeType {
+  VIOLATION_CODE_TYPE_UNSPECIFIED = 0;
+
+  // 저작권 및 소유권 위반
+
+  // 저작권 침해 (음원, 타인 영상 무단 사용)
+  VIOLATION_CODE_TYPE_COPYRIGHT_INFRINGEMENT = 1;
+
+  // 불법 및 유해 콘텐츠
+
+  // 불법 콘텐츠/행위
+  VIOLATION_CODE_TYPE_ILLEGAL_CONTENT = 2;
+  // 음란물 및 성적 콘텐츠
+  VIOLATION_CODE_TYPE_NUDITY_OR_SEXUAL = 3;
+  // 폭력성 및 잔혹성
+  VIOLATION_CODE_TYPE_VIOLENCE_OR_GORE = 4;
+
+  // 커뮤니티 위해 행위
+
+  // 혐오 표현 및 차별
+  VIOLATION_CODE_TYPE_HATE_SPEECH = 5;
+  // 괴롭힘 및 사이버 불링
+  VIOLATION_CODE_TYPE_HARASSMENT_OR_BULLYING = 6;
+
+  // 서비스 운영 방해
+
+  // 스팸, 사기, 피싱 광고
+  VIOLATION_CODE_TYPE_SPAM_OR_SCAM = 7;
+  // 허위 사실 유포 (가짜 뉴스)
+  VIOLATION_CODE_TYPE_MISINFORMATION = 8;
+
+  // 기타
+  VIOLATION_CODE_TYPE_OTHER = 9;
+}
+
+// ViolationActionType은 제제 대상자가 받는 처분이다.
+enum ViolationActionType {
+  VIOLATION_ACTION_TYPE_UNSPECIFIED = 0;
+
+  // 노출 제한 단계
+
+  // 단순 경고 (콘텐츠는 유지)
+  VIOLATION_ACTION_TYPE_WARNING = 1;
+  // 연령 제한 (성인 인증 필요)
+  VIOLATION_ACTION_TYPE_AGE_RESTRICTED = 2;
+  // 노출 제한 (검색 및 추천 제외)
+  VIOLATION_ACTION_TYPE_SHADOW_BANNED = 3;
+
+  // 직접 제재 단계
+
+  // 음소거 (저작권 음원 처리 등)
+  VIOLATION_ACTION_TYPE_CONTENT_MUTED = 4;
+  // 콘텐츠 강제 삭제
+  VIOLATION_ACTION_TYPE_CONTENT_REMOVED = 5;
+
+  // 계정 제재 단계
+
+  // 스트라이크 누적 (유튜브 식 패널티)
+  VIOLATION_ACTION_TYPE_STRIKE_ISSUED = 6;
+  // 계정 일시 정지
+  VIOLATION_ACTION_TYPE_ACCOUNT_SUSPENDED = 7;
+  // 계정 영구 정지
+  VIOLATION_ACTION_TYPE_ACCOUNT_BANNED = 8;
+}
+
+enum ViolationTargetType {
+  VIOLATION_TARGET_TYPE_UNSPECIFIED = 0;
+  VIOLATION_TARGET_TYPE_POST = 1;
+  VIOLATION_TARGET_TYPE_COMMENT = 2;
+  VIOLATION_TARGET_TYPE_STUDIO = 3;
+}
+
+// 제제 정보
+message Violation {
+  // 고유 id
+  string id = 1;
+  // 제제 대상
+  ViolationTargetType target_type = 2;
+  // 제제 대상의 고유 id
+  // 해당 id를 기반으로 Post, Comment, Studio 등을 조회하는데 사용한다.
+  string target_id = 3;
+
+  // 제제 타입
+  ViolationCodeType code = 4;
+  // 제제 타입에 대한 텍스트
+  string code_text = 5;
+  // 조치 사항
+  ViolationActionType action = 6;
+  // 조치 사항에 대한 텍스트
+  string action_text = 7;
+
+  // 제제에 대한 상세 설명
+  string description = 8;
+  // 소명 정보
+  AppealInfo appeal_info = 9;
+
+  // 소명 가능 기간
+  // 처리일이 아닌 소명 제출일 기준
+  google.protobuf.Timestamp appeal_deadline_at = 10;
+  google.protobuf.Timestamp created_at = 11;
+  google.protobuf.Timestamp updated_at = 12;
+}
+
+// AppealStatusType는 이의 제기(소명)의 진행 상태를 정의하는 유형이다.
+enum AppealStatusType {
+  // 상태가 지정되지 않은 기본값이다.
+  APPEAL_STATUS_TYPE_UNSPECIFIED = 0;
+
+  // 유저가 소명을 제출하여 접수가 완료된 상태이다. (리뷰 대기 중)
+  APPEAL_STATUS_TYPE_PENDING = 1;
+
+  // 관리자가 유저의 소명 내용을 검토 중인 상태입니다.
+  // 추가 자료가 필요한 경우 등록된 email로 요청이 간다.
+  APPEAL_STATUS_TYPE_IN_REVIEW = 2;
+
+  // 소명이 받아들여져 제재가 철회되고 콘텐츠나 계정이 원복된 상태이다.
+  APPEAL_STATUS_TYPE_APPROVED = 3;
+
+  // 소명이 기각되어 기존의 제재 조치가 그대로 유지된 상태이다.
+  APPEAL_STATUS_TYPE_REJECTED = 4;
+
+  // 추가 자료 제출 필요
+  APPEAL_STATUS_TYPE_NEED_ADDITIONAL = 5;
+
+  // 유저가 접수한 소명을 스스로 취소한 상태이다.
+  APPEAL_STATUS_TYPE_CANCELED = 6;
+}
+
+message AppealStatus {
+  // 상태 코드
+  AppealStatusType status = 1;
+  // 상태 텍스트
+  string status_text = 2;
+  // 유저의 추가 응답
+  string user_additional_message = 3;
+  // TODO: storage core 작성시 추가
+  // repeated core.storage.v1.object files = 4;
+
+  // 담당자 의견
+  string reviewer_comment = 5;
+
+  // 생성 시간
+  google.protobuf.Timestamp created_at = 10;
+}
+
+// AppealInfo는 신고에 대한 소명 내용이다.
+message AppealInfo {
+  // 신고 내역에 대한 id
+  string violation_id = 1;
+  // 유저의 소명 내용
+  string user_reason = 2;
+  // TODO: storage core 작성시 추가
+  // repeated core.storage.v1.object files = 4;
+
+  // 소명 진행 내역
+  repeated AppealStatus processing_status = 10;
+  // 생성 시간
+  google.protobuf.Timestamp created_at = 11;
+  // 수정 시간
+  google.protobuf.Timestamp updated_at = 12;
+  // 처리 완료 시간
+  google.protobuf.Timestamp completed_at = 13;
+}
