@@ -3,6 +3,8 @@ syntax = "proto3";
 package port.post.v1;
 
 import "core/common/v1/common_models.proto";
+import "core/storage/v1/storage_model.proto";
+import "core/violation/v1/violation_model.proto";
 import "google/protobuf/duration.proto";
 import "google/protobuf/timestamp.proto";
 
@@ -27,8 +29,8 @@ enum PostType {
 
 // ContentFile은 게시글에 첨부된 미디어 파일(이미지, 영상, 텍스트, 오디오 등)의 메타데이터이다.
 message ContentFile {
-  // 미디어 파일의 접근 URL
-  string url = 1;
+  // 미디어 파일 정보
+  core.storage.v1.File file_info = 1;
   // 노출의 순서 (여러개의 파일이 존재 할 시 처리를 위함, 1부터 시작)
   int32 position = 2;
 }
@@ -138,6 +140,9 @@ message OwnerPost {
 
   // 총 싫어요 수 (소유자 대시보드용, 외부 비노출)
   int64 unlike_count = 50;
+
+  // 게시물에 신고 내역이 있때 표시될 정보(가장 마지막 처리내용이 표시된다.)
+  core.violation.v1.Violation violation_info = 51;
 
   // 삭제 일시
   google.protobuf.Timestamp deleted_at = 55;

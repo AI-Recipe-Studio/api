@@ -2,6 +2,7 @@ syntax = "proto3";
 
 package core.violation.v1;
 
+import "core/storage/v1/storage_model.proto";
 import "google/protobuf/timestamp.proto";
 
 // ViolationCodeType는 제제 코드로 실제 사용자가 위반한 내용에 대한 코드이다.
@@ -140,8 +141,8 @@ message AppealStatus {
   string status_text = 2;
   // 유저의 추가 응답
   string user_additional_message = 3;
-  // TODO: storage core 작성시 추가
-  // repeated core.storage.v1.object files = 4;
+  // 유저가 첨부한 파일
+  repeated core.storage.v1.File files = 4;
 
   // 담당자 의견
   string reviewer_comment = 5;
@@ -156,8 +157,8 @@ message AppealInfo {
   string violation_id = 1;
   // 유저의 소명 내용
   string user_reason = 2;
-  // TODO: storage core 작성시 추가
-  // repeated core.storage.v1.object files = 4;
+  // 유저가 첨부한 파일
+  repeated core.storage.v1.File files = 3;
 
   // 소명 진행 내역
   repeated AppealStatus processing_status = 10;

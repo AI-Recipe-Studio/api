@@ -2,7 +2,6 @@ syntax = "proto3";
 
 package core.auth.v1;
 
-import "core/payment/v1/payment_model.proto";
 import "google/protobuf/timestamp.proto";
 
 // 유저 계정의 활성화 및 제재 상태를 정의하는 유형입니다.
