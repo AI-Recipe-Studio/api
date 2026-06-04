@@ -72,11 +72,11 @@ message PublicStudio {
   // 스튜디오의 description 필드 아로 아래 위치하는 외부 링크 필드이다.
   repeated StudioExternalLink external_links = 11;
 
-  // 게시 플렛폼에서의 스튜디오 생성 일시
+  // 게시 플랫폼에서의 스튜디오 생성 일시
   google.protobuf.Timestamp created_at = 12;
 }
 
-// OwnerStudioInfo는 소유자 및 관리자가 접근 할 수 있는 게시 플렛폼의 스튜디오 정보이다.
+// OwnerStudioInfo는 소유자 및 관리자가 접근 할 수 있는 게시 플랫폼의 스튜디오 정보이다.
 //
 // 모든 정보가 표시된다.
 message OwnerStudio {
@@ -103,7 +103,7 @@ message OwnerStudio {
   // 스튜디오의 description 필드 아로 아래 위치하는 외부 링크 필드이다.
   repeated StudioExternalLink external_links = 11;
 
-  // 게시 플렛폼에서의 스튜디오 생성 일시
+  // 게시 플랫폼에서의 스튜디오 생성 일시
   google.protobuf.Timestamp created_at = 12;
 
   // -------------------------
