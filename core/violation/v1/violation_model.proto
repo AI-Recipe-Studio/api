@@ -5,7 +5,7 @@ package core.violation.v1;
 import "core/storage/v1/storage_model.proto";
 import "google/protobuf/timestamp.proto";
 
-// ViolationCodeType는 제제 코드로 실제 사용자가 위반한 내용에 대한 코드이다.
+// ViolationCodeType는 제재 코드로 실제 사용자가 위반한 내용에 대한 코드이다.
 enum ViolationCodeType {
   VIOLATION_CODE_TYPE_UNSPECIFIED = 0;
 
@@ -41,7 +41,7 @@ enum ViolationCodeType {
   VIOLATION_CODE_TYPE_OTHER = 9;
 }
 
-// ViolationActionType은 제제 대상자가 받는 처분이다.
+// ViolationActionType은 제재 대상자가 받는 처분이다.
 enum ViolationActionType {
   VIOLATION_ACTION_TYPE_UNSPECIFIED = 0;
 
@@ -79,26 +79,26 @@ enum ViolationTargetType {
   VIOLATION_TARGET_TYPE_ACCOUNT = 4;
 }
 
-// 제제 정보
+// 제재 정보
 message Violation {
   // 고유 id
   string id = 1;
-  // 제제 대상
+  // 제재 대상
   ViolationTargetType target_type = 2;
-  // 제제 대상의 고유 id
+  // 제재 대상의 고유 id
   // 해당 id를 기반으로 Post, Comment, Studio 등을 조회하는데 사용한다.
   string target_id = 3;
 
-  // 제제 타입
+  // 제재 타입
   ViolationCodeType code = 4;
-  // 제제 타입에 대한 텍스트
+  // 제재 타입에 대한 텍스트
   string code_text = 5;
   // 조치 사항
   ViolationActionType action = 6;
   // 조치 사항에 대한 텍스트
   string action_text = 7;
 
-  // 제제에 대한 상세 설명
+  // 제재에 대한 상세 설명
   string description = 8;
   // 소명 정보
   AppealInfo appeal_info = 9;

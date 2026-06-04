@@ -12,8 +12,8 @@ message PaymentGatewayInfo {
   string account_id = 1;
   // PG사 정보
   PaymentGatewayType type = 2;
-  // 해당 플렛폼에서 할당된 결제 id
-  // POLAR 같은 포인트 관리가 탑제된 서비스의 경우 필요함
+  // 해당 플랫폼에서 할당된 결제 id
+  // POLAR 같은 포인트 관리가 탑재된 서비스의 경우 필요함
   string external_id = 3;
   // 결제 우선 순위
   uint32 priority = 4;
