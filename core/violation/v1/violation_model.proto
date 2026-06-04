@@ -61,14 +61,14 @@ enum ViolationActionType {
   // 콘텐츠 강제 삭제
   VIOLATION_ACTION_TYPE_CONTENT_REMOVED = 5;
 
-  // 계정 제재 단계
+  // 계정|스튜디오 제재 단계
 
   // 스트라이크 누적 (유튜브 식 패널티)
   VIOLATION_ACTION_TYPE_STRIKE_ISSUED = 6;
-  // 계정 일시 정지
-  VIOLATION_ACTION_TYPE_ACCOUNT_SUSPENDED = 7;
-  // 계정 영구 정지
-  VIOLATION_ACTION_TYPE_ACCOUNT_BANNED = 8;
+  // 일시 정지
+  VIOLATION_ACTION_TYPE_SUSPENDED = 7;
+  // 영구 정지
+  VIOLATION_ACTION_TYPE_BANNED = 8;
 }
 
 enum ViolationTargetType {
@@ -76,6 +76,7 @@ enum ViolationTargetType {
   VIOLATION_TARGET_TYPE_POST = 1;
   VIOLATION_TARGET_TYPE_COMMENT = 2;
   VIOLATION_TARGET_TYPE_STUDIO = 3;
+  VIOLATION_TARGET_TYPE_ACCOUNT = 4;
 }
 
 // 제제 정보
