@@ -90,6 +90,19 @@ message PublicPost {
   google.protobuf.Timestamp created_at = 16;
   // 수정 일시
   google.protobuf.Timestamp updated_at = 17;
+
+  // 분기 생성 허용 여부
+  //
+  // 원본에서 적용된 값을 상속 받는다.
+  //
+  // 만약 true 상태에서 분기점이 존재하지만 false로 변경할 경우
+  // 신규 분기점 생성은 불가능 하지만, 이미 만들어진 분기점은 그대로 유지된다.
+  // ( 다만 해당 분기점의 수정은 자유롭다.)
+  bool can_crate_branch = 18;
+  // 해당 Post가 분기점이 존재 하는지 유무
+  bool has_branch = 19;
+  // 해당 분기점 정보
+  BranchInfo branch_info = 20;
 }
 
 // OwnerPost는 Post 작성자 본인(소유자) 및 관리자에게 노출되는 상세 데이터 모델이다.
@@ -133,6 +146,18 @@ message OwnerPost {
   google.protobuf.Timestamp created_at = 16;
   // 수정 일시
   google.protobuf.Timestamp updated_at = 17;
+  // 분기 생성 허용 여부
+  //
+  // 원본에서 적용된 값을 상속 받는다.
+  //
+  // 만약 true 상태에서 분기점이 존재하지만 false로 변경할 경우
+  // 신규 분기점 생성은 불가능 하지만, 이미 만들어진 분기점은 그대로 유지된다.
+  // ( 다만 해당 분기점의 수정은 자유롭다.)
+  bool can_crate_branch = 18;
+  // 해당 Post가 분기점이 존재 하는지 유무
+  bool has_branch = 19;
+  // 해당 분기점 정보
+  BranchInfo branch_info = 20;
 
   // -------------------------
   // Owner 전용 필드
@@ -190,6 +215,8 @@ message PostSummary {
   string thumbnail_image_url = 7;
   // 해당 Post의 연령 제한
   AgeRestrictionType age_restriction = 8;
+  // 해당 Post가 분기점이 존재 하는지 유무
+  bool has_branch = 9;
   // 영상 콘텐츠인 경우 재생 시간 ( 나머지의 경우 기본값: 0)
   google.protobuf.Duration duration = 10;
   // 첨부된 미디어 파일 목록
@@ -205,4 +232,74 @@ message PostSummary {
 
 message PostSummaryList {
   repeated PostSummary items = 1;
+}
+
+message BranchInfo {
+  // 원본 Post id
+  string origin_post_id = 1;
+  // 해당 분기의 상위 Post id
+  //
+  // git 에서 브랜치 처럼 바로 직전의 브랜치 명
+  repeated string parent_post_id = 2;
+
+  uint32 depth = 3;
+
+  // 이어서 시작 되는 위치
+  message Cursor {
+    // 커서의 타입
+    //
+    // 영상, 음악, Book, 이미지 이 될 수 있다.
+    string type = 1;
+    // 타입별로 다른 값지 지정 된다.
+    //
+    // 1. 영상과 음악의 경우
+    // ```markdown
+    // timestamp 가 전달된다.
+    // ms 단위의 값이 사용되며 1초의 경우 1000 이다.
+    // ```
+    //
+    // 2. Book 의 경우
+    // ```markdown
+    // 분기점이 발생한 시점의 단어의 Book 전체 텍스트 기준 토큰의 위치가 반환된다.(시작은 1이다. 띄어쓰기 기준으로 분리된다.)
+    //
+    // 예)
+    // 동해물과 백두산이 마르고 닳도록
+    // **위에서 `마르고`에서 분기가 생성**된다면 current의 값은 3이다.
+    // ```
+    //
+    // 3. 이미지 의 경우
+    // ```markdown
+    // 이미지의 경우 파일의 위치가 반환된다(시작은 1이다.)
+    //
+    // ```
+    uint64 current = 2;
+  }
+
+  Cursor cursor = 4;
+}
+
+// 해당 분기점의 선택률을 시각적으로 보여주기 위해 필요한 정보이다.
+message BranchTree {
+  // 원본 포스트 정보
+  string origin_post_id = 1;
+  // 하위 분기점들의 총 선택 횟수
+  uint64 node_select_count = 2;
+  // 하위 분기점 정보
+  repeated BranchTreeNode node = 3;
+}
+
+// BranchTreeNode 는 분기점 정보이다.
+//
+// 분기점의 DB 테이블중에는 해당 사용자가 선택해서 봤는지에 대한 정보가 있어야 한다.
+message BranchTreeNode {
+  // 해당 노드의 고유 id
+  string node_id = 1;
+  // 상위 노드 id
+  string parent_node_id = 2;
+  // 해당 노드의 post id
+  uint64 post_id = 3;
+  // 해당 노드가 선택된 횟수
+  uint64 select_count = 4;
+  // 해당 노드의 연결된 분기점의 명칭
+  string title = 5;
 }
