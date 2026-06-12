@@ -32,7 +32,7 @@ message ContentFile {
   // 미디어 파일 정보
   core.storage.v1.File file_info = 1;
   // 노출의 순서 (여러개의 파일이 존재 할 시 처리를 위함, 1부터 시작)
-  int32 position = 2;
+  uint32 order = 2;
 }
 
 // AgeRestrictionType는 추후 연령 제한을 위한 필드이다.
@@ -83,8 +83,8 @@ message PublicPost {
   AgeRestrictionType age_restriction = 13;
   // 상태 정보
   core.common.v1.UserContentStatusType status = 14;
-  // 미디어 프로세싱 상태 정보
-  core.common.v1.MediaProcessingStatusType media_processing_status = 15;
+  // 연결된 하위 분기점들의 상호작용 정보 리스트
+  repeated BranchInteractiveInfo branch_interactive_list = 15;
 
   // 게시글 최초 생성 일시
   google.protobuf.Timestamp created_at = 16;
@@ -102,6 +102,9 @@ message PublicPost {
   // 해당 Post가 분기점이 존재 하는지 유무
   bool has_branch = 19;
   // 해당 분기점 정보
+  //
+  // 현재 보는 Post가 원본인지, 분기점에서 파생된 Post인지에 따라 응답이 다르다.
+  // 원본인 경우 없다.
   BranchInfo branch_info = 20;
 }
 
@@ -139,8 +142,8 @@ message OwnerPost {
   AgeRestrictionType age_restriction = 13;
   // 상태 정보
   core.common.v1.UserContentStatusType status = 14;
-  // 미디어 프로세싱 상태 정보
-  core.common.v1.MediaProcessingStatusType media_processing_status = 15;
+  // 연결된 하위 분기점들의 상호작용 정보 리스트
+  repeated BranchInteractiveInfo branch_interactive_list = 15;
 
   // 게시글 최초 생성 일시
   google.protobuf.Timestamp created_at = 16;
@@ -168,6 +171,8 @@ message OwnerPost {
 
   // 게시물에 신고 내역이 있때 표시될 정보(가장 마지막 처리내용이 표시된다.)
   core.violation.v1.Violation violation_info = 51;
+  // 미디어 프로세싱 상태 정보
+  core.common.v1.MediaProcessingStatusType media_processing_status = 52;
 
   // 삭제 일시
   google.protobuf.Timestamp deleted_at = 55;
@@ -223,8 +228,6 @@ message PostSummary {
   repeated ContentFile content_files = 11;
   // 상태 정보
   core.common.v1.UserContentStatusType status = 12;
-  // 미디어 프로세싱 상태 정보
-  core.common.v1.MediaProcessingStatusType media_processing_status = 13;
 
   // 게시글 최초 생성 일시
   google.protobuf.Timestamp created_at = 14;
@@ -302,4 +305,94 @@ message BranchTreeNode {
   uint64 select_count = 4;
   // 해당 노드의 연결된 분기점의 명칭
   string title = 5;
+  // post에 지정된 썸네일 이미지
+  string thumbnail_image_url = 6;
+  // post 타입
+  PostType type = 7;
+  // 총 좋아요 수
+  uint64 like_count = 8;
+  // 사용자에게 표시 유무
+  //
+  // 사용자가 방문한 경우에만 프론트에서 표시한다.
+  bool is_active = 9;
+}
+
+// BranchInteractiveInfo는 현재 보고 있는 Post의 분기점들의 상호작용 정보이다.
+message BranchInteractiveInfo {
+  // 해당 상호작용을 클릭했을 때, 팝업 형태로 뜨는지, 아니면 링크로 이동되는지 정보이다.
+  //
+  // true 인 경우 링크로 이동
+  // false 인 경우 popup형태로 뜬다.
+  bool is_redirect = 1;
+
+  // 연결된 포스트의 요약 정보
+  PostSummary post_info = 2;
+
+  message VideoPosition {
+    // 상호작용 요소 표시 시작 시간 (ms 단위)
+    uint64 start_timestamp = 1;
+    // 상호작용 요소 표시 시간 (ms 단위)
+    //
+    // default: 5초 = 5000
+    // max: 10초 = 10000 (이 이상 설정은 불가능하다.)
+    uint64 duration = 2;
+    // 비율 좌표는 해당 영상 콘텐츠의 가로 세로 최댓값을 100으로 고정하여 계산한다.
+    //
+    // 값은 소숫점 첫째 자리까지 인정된다. 나머지는 반올림 한다.
+    // 예를들어 1080p의 영상의 x=640 인 경우 33.3 이 된다.
+    float x = 3;
+    // 비율 좌표는 해당 영상 콘텐츠의 가로 세로 최댓값을 100으로 고정하여 계산한다.
+    //
+    // 값은 소숫점 첫째 자리까지 인정된다. 나머지는 반올림 한다.
+    // 예를들어 1080p의 영상의 x=640 인 경우 33.3 이 된다.
+    float y = 4;
+  }
+  message AudioPosition {
+    // 상호작용 요소 표시 시작 시간 (ms 단위)
+    uint64 start_timestamp = 1;
+    // 상호작용 요소 표시 시간 (ms 단위)
+    //
+    // default: 5초 = 5000
+    // max: 10초 = 10000 (이 이상 설정은 불가능하다.)
+    uint64 duration = 2;
+  }
+  message ImagePosition {
+    // 인터렉티브를 표시할 image의 순서
+    uint32 order = 1;
+    // 비율 좌표는 해당 영상 콘텐츠의 가로 세로 최댓값을 100으로 고정하여 계산한다.
+    //
+    // 값은 소숫점 첫째 자리까지 인정된다. 나머지는 반올림 한다.
+    // 예를들어 1080p의 이미지의 x=640 인 경우 33.3 이 된다.
+    float x = 3;
+    // 비율 좌표는 해당 영상 콘텐츠의 가로 세로 최댓값을 100으로 고정하여 계산한다.
+    //
+    // 값은 소숫점 첫째 자리까지 인정된다. 나머지는 반올림 한다.
+    // 예를들어 1080p의 이미지의 x=640 인 경우 33.3 이 된다.
+    float y = 4;
+  }
+  message BookPosition {
+    // 단어의 위치
+    //
+    // ```markdown
+    // 분기점이 발생한 시점의 단어의 Book 전체 텍스트 기준 토큰의 위치가 반환된다.(시작은 1이다. 띄어쓰기 기준으로 분리된다.)
+    //
+    // 예)
+    // 동해물과 백두산이 마르고 닳도록
+    // **위에서 `마르고`에서 분기가 생성**된다면 word_order의 값은 3이다.
+    // ```
+    uint32 word_order = 1;
+    // 현재 word_order가 가르키고 있는 단어
+    //
+    // 만약 해당 값이 일치하지 않는 경우는 원본 사용자가 컨텐츠를 변경했을때 이다.
+    // 이 경우 26.06.12 기준 원본의 수정일로부터 1주일간 표시후 변경에 없다면 제거된다.
+    string word = 2;
+  }
+
+  // 현재 type에 따라 표시되는 정보이다.
+  oneof position {
+    VideoPosition video = 3;
+    AudioPosition audio = 4;
+    ImagePosition image = 5;
+    BookPosition book = 6;
+  }
 }
