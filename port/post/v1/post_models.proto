@@ -98,7 +98,7 @@ message PublicPost {
   // 만약 true 상태에서 분기점이 존재하지만 false로 변경할 경우
   // 신규 분기점 생성은 불가능 하지만, 이미 만들어진 분기점은 그대로 유지된다.
   // ( 다만 해당 분기점의 수정은 자유롭다.)
-  bool can_crate_branch = 18;
+  bool can_create_branch = 18;
   // 해당 Post가 분기점이 존재 하는지 유무
   bool has_branch = 19;
   // 해당 분기점 정보
@@ -156,7 +156,7 @@ message OwnerPost {
   // 만약 true 상태에서 분기점이 존재하지만 false로 변경할 경우
   // 신규 분기점 생성은 불가능 하지만, 이미 만들어진 분기점은 그대로 유지된다.
   // ( 다만 해당 분기점의 수정은 자유롭다.)
-  bool can_crate_branch = 18;
+  bool can_create_branch = 18;
   // 해당 Post가 분기점이 존재 하는지 유무
   bool has_branch = 19;
   // 해당 분기점 정보
@@ -236,6 +236,13 @@ message PostSummary {
 message PostSummaryList {
   repeated PostSummary items = 1;
 }
+enum CursorType {
+  CURSOR_TYPE_UNSPECIFIED = 0;
+  CURSOR_TYPE_VIDEO = 1;
+  CURSOR_TYPE_AUDIO = 2;
+  CURSOR_TYPE_BOOK = 3;
+  CURSOR_TYPE_IMAGE = 4;
+}
 
 message BranchInfo {
   // 원본 Post id
@@ -252,7 +259,7 @@ message BranchInfo {
     // 커서의 타입
     //
     // 영상, 음악, Book, 이미지 이 될 수 있다.
-    string type = 1;
+    CursorType type = 1;
     // 타입별로 다른 값지 지정 된다.
     //
     // 1. 영상과 음악의 경우
@@ -300,7 +307,7 @@ message BranchTreeNode {
   // 상위 노드 id
   string parent_node_id = 2;
   // 해당 노드의 post id
-  uint64 post_id = 3;
+  string post_id = 3;
   // 해당 노드가 선택된 횟수
   uint64 select_count = 4;
   // 해당 노드의 연결된 분기점의 명칭

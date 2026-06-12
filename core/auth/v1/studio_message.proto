@@ -98,4 +98,6 @@ message CreditHistoryInfo {
 
   // 사용된 크레딧
   float spent_credit = 15;
+  // 발생 시간
+  google.protobuf.Timestamp created_at = 16;
 }
