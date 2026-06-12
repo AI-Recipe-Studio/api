@@ -1,0 +1,101 @@
+syntax = "proto3";
+
+package core.auth.v1;
+
+import "google/protobuf/timestamp.proto";
+
+message Studio {
+  string id = 1;
+  string name = 2;
+  string description = 3;
+
+  google.protobuf.Timestamp created_at = 13;
+  google.protobuf.Timestamp updated_at = 14;
+  google.protobuf.Timestamp deleted_at = 15;
+}
+
+enum PlanType {
+  // 명시적 에러 발생
+  PLAN_TYPE_UNSPECIFIED = 0;
+  PLAN_TYPE_FREE = 1;
+
+  PLAN_TYPE_DEMO = 2;
+  // 추후 학생 할인 등
+  PLAN_TYPE_STUDENT = 3;
+
+  PLAN_TYPE_BASIC = 5;
+
+  PLAN_TYPE_CREATOR = 6;
+
+  PLAN_TYPE_PRO = 9;
+
+  PLAN_TYPE_ENTERPRISE = 15;
+}
+
+message PlanTypeInfo {
+  string name = 1;
+  PlanType type = 2;
+
+  // metadata
+
+  // 최대 포함 인원
+  //
+  // 각 플랜별로 역할 설정 범위가 다르다.
+  // 예를 들어 BASIC의 경우 수정, 삭제 권한이 있는 worker 역할군만 할당할 수 있다.
+  // CREATOR의 경우 수정 삭제 권한이 있는 manager 1명과 수정 권한만 존재하는 worker 역할군을 할당할 수 있다.
+  // PRO 플랜의 경우 파일별 접근 권한이 다른 manager 3명 및 수정 권한이 있는 worker 역할군을 할당할 수 있다.
+  // ENTERPRISE 플랜의 경우 역할군을 직접 커스텀 할 수 있다.
+  uint32 max_crew_amount = 10;
+  // 구독시 제공되는 크레딧 정보
+  float built_in_credit = 11;
+}
+
+message PlanInfo {
+  string studio_id = 1;
+  PlanTypeInfo type = 2;
+
+  CreditInfo credit = 3;
+
+  // 구독 갱신 성공 유무
+  bool last_payment_status = 13;
+  // 플랜 시작일
+  google.protobuf.Timestamp payment_start_date = 14;
+  // 결제 예정일
+  google.protobuf.Timestamp payment_due_date = 15;
+}
+
+// CreditInfo는 현 플랜의 결제일 기준 정보이다.
+//
+// 조회시에는 별도로 제공한다.
+message CreditInfo {
+  // 제공되는 크레딧 정보
+  //
+  // 구독 혹은 무료 플랜으로 제공되는 크레딧
+  // 월별로 갱신 된다(이전 크레딧은 유지 되지 않는다.)
+  float subscribed_credit = 1;
+  // 별도 충전한 크레딧 정보
+  float charged_credit = 2;
+  // 직전 결제일 이후 현시점까지 사용한 크레딧 소모량
+  float used_credit = 3;
+}
+
+message CreditHistoryInfo {
+  string id = 1;
+  string studio_id = 2;
+  string triggered_user_id = 3;
+  // 추후 워크플로우 플렛폼 추가시 작업 캔버스 아이디
+  string canvas_id = 4;
+  // 해당 캔버스의 특정 노드가 트리거 했을 경우 추가는 정보
+  string node_id = 5;
+  // 입력 토큰량
+  uint32 input_token = 6;
+  // 출력 토큰량
+  uint32 output_token = 7;
+  // agent 사용 정보
+  string agent_id = 8;
+  // agent 사용 정보
+  string agent_name = 9;
+
+  // 사용된 크레딧
+  float spent_credit = 15;
+}
