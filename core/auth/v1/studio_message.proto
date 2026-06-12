@@ -47,7 +47,8 @@ message PlanTypeInfo {
   // ENTERPRISE 플랜의 경우 역할군을 직접 커스텀 할 수 있다.
   uint32 max_crew_amount = 10;
   // 구독시 제공되는 크레딧 정보
-  float built_in_credit = 11;
+  // 1$ = 1e6(1,000,000) 크레딧으로 환산
+  uint64 built_in_credit = 11;
 }
 
 message PlanInfo {
@@ -67,16 +68,21 @@ message PlanInfo {
 // CreditInfo는 현 플랜의 결제일 기준 정보이다.
 //
 // 조회시에는 별도로 제공한다.
+// credit의 경우 1$ = 1e6(1,000,000) 크레딧으로 환산된다.
+// 사용자에게 표시할 때는 $로 변환해서 표시한다.
 message CreditInfo {
   // 제공되는 크레딧 정보
   //
   // 구독 혹은 무료 플랜으로 제공되는 크레딧
   // 월별로 갱신 된다(이전 크레딧은 유지 되지 않는다.)
-  float subscribed_credit = 1;
+  // 1$ = 1e6(1,000,000) 크레딧으로 환산
+  uint64 subscribed_credit = 1;
   // 별도 충전한 크레딧 정보
-  float charged_credit = 2;
+  // 1$ = 1e6(1,000,000) 크레딧으로 환산
+  uint64 charged_credit = 2;
   // 직전 결제일 이후 현시점까지 사용한 크레딧 소모량
-  float used_credit = 3;
+  // 1$ = 1e6(1,000,000) 크레딧으로 환산
+  uint64 used_credit = 3;
 }
 
 message CreditHistoryInfo {
@@ -97,7 +103,8 @@ message CreditHistoryInfo {
   string agent_name = 9;
 
   // 사용된 크레딧
-  float spent_credit = 15;
+  // 1$ = 1e6(1,000,000) 크레딧으로 환산
+  uint64 spent_credit = 15;
   // 발생 시간
   google.protobuf.Timestamp created_at = 16;
 }

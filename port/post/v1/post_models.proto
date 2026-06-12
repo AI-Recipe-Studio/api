@@ -260,7 +260,7 @@ message BranchInfo {
     //
     // 영상, 음악, Book, 이미지 이 될 수 있다.
     CursorType type = 1;
-    // 타입별로 다른 값지 지정 된다.
+    // 타입별로 다른 값이 지정 된다.
     //
     // 1. 영상과 음악의 경우
     // ```markdown
