@@ -32,7 +32,7 @@ message ContentFile {
   // 미디어 파일 정보
   core.storage.v1.File file_info = 1;
   // 노출의 순서 (여러개의 파일이 존재 할 시 처리를 위함, 1부터 시작)
-  int32 position = 2;
+  uint32 order = 2;
 }
 
 // AgeRestrictionType는 추후 연령 제한을 위한 필드이다.
@@ -83,13 +83,29 @@ message PublicPost {
   AgeRestrictionType age_restriction = 13;
   // 상태 정보
   core.common.v1.UserContentStatusType status = 14;
-  // 미디어 프로세싱 상태 정보
-  core.common.v1.MediaProcessingStatusType media_processing_status = 15;
+  // 연결된 하위 분기점들의 상호작용 정보 리스트
+  repeated BranchInteractiveInfo branch_interactive_list = 15;
 
   // 게시글 최초 생성 일시
   google.protobuf.Timestamp created_at = 16;
   // 수정 일시
   google.protobuf.Timestamp updated_at = 17;
+
+  // 분기 생성 허용 여부
+  //
+  // 원본에서 적용된 값을 상속 받는다.
+  //
+  // 만약 true 상태에서 분기점이 존재하지만 false로 변경할 경우
+  // 신규 분기점 생성은 불가능 하지만, 이미 만들어진 분기점은 그대로 유지된다.
+  // ( 다만 해당 분기점의 수정은 자유롭다.)
+  bool can_create_branch = 18;
+  // 해당 Post가 분기점이 존재 하는지 유무
+  bool has_branch = 19;
+  // 해당 분기점 정보
+  //
+  // 현재 보는 Post가 원본인지, 분기점에서 파생된 Post인지에 따라 응답이 다르다.
+  // 원본인 경우 없다.
+  BranchInfo branch_info = 20;
 }
 
 // OwnerPost는 Post 작성자 본인(소유자) 및 관리자에게 노출되는 상세 데이터 모델이다.
@@ -126,13 +142,25 @@ message OwnerPost {
   AgeRestrictionType age_restriction = 13;
   // 상태 정보
   core.common.v1.UserContentStatusType status = 14;
-  // 미디어 프로세싱 상태 정보
-  core.common.v1.MediaProcessingStatusType media_processing_status = 15;
+  // 연결된 하위 분기점들의 상호작용 정보 리스트
+  repeated BranchInteractiveInfo branch_interactive_list = 15;
 
   // 게시글 최초 생성 일시
   google.protobuf.Timestamp created_at = 16;
   // 수정 일시
   google.protobuf.Timestamp updated_at = 17;
+  // 분기 생성 허용 여부
+  //
+  // 원본에서 적용된 값을 상속 받는다.
+  //
+  // 만약 true 상태에서 분기점이 존재하지만 false로 변경할 경우
+  // 신규 분기점 생성은 불가능 하지만, 이미 만들어진 분기점은 그대로 유지된다.
+  // ( 다만 해당 분기점의 수정은 자유롭다.)
+  bool can_create_branch = 18;
+  // 해당 Post가 분기점이 존재 하는지 유무
+  bool has_branch = 19;
+  // 해당 분기점 정보
+  BranchInfo branch_info = 20;
 
   // -------------------------
   // Owner 전용 필드
@@ -143,6 +171,8 @@ message OwnerPost {
 
   // 게시물에 신고 내역이 있때 표시될 정보(가장 마지막 처리내용이 표시된다.)
   core.violation.v1.Violation violation_info = 51;
+  // 미디어 프로세싱 상태 정보
+  core.common.v1.MediaProcessingStatusType media_processing_status = 52;
 
   // 삭제 일시
   google.protobuf.Timestamp deleted_at = 55;
@@ -190,14 +220,14 @@ message PostSummary {
   string thumbnail_image_url = 7;
   // 해당 Post의 연령 제한
   AgeRestrictionType age_restriction = 8;
+  // 해당 Post가 분기점이 존재 하는지 유무
+  bool has_branch = 9;
   // 영상 콘텐츠인 경우 재생 시간 ( 나머지의 경우 기본값: 0)
   google.protobuf.Duration duration = 10;
   // 첨부된 미디어 파일 목록
   repeated ContentFile content_files = 11;
   // 상태 정보
   core.common.v1.UserContentStatusType status = 12;
-  // 미디어 프로세싱 상태 정보
-  core.common.v1.MediaProcessingStatusType media_processing_status = 13;
 
   // 게시글 최초 생성 일시
   google.protobuf.Timestamp created_at = 14;
@@ -205,4 +235,171 @@ message PostSummary {
 
 message PostSummaryList {
   repeated PostSummary items = 1;
+}
+enum CursorType {
+  CURSOR_TYPE_UNSPECIFIED = 0;
+  CURSOR_TYPE_VIDEO = 1;
+  CURSOR_TYPE_AUDIO = 2;
+  CURSOR_TYPE_BOOK = 3;
+  CURSOR_TYPE_IMAGE = 4;
+}
+
+message BranchInfo {
+  // 원본 Post id
+  string origin_post_id = 1;
+  // 해당 분기의 상위 Post id
+  //
+  // git 에서 브랜치 처럼 바로 직전의 브랜치 명
+  repeated string parent_post_id = 2;
+
+  uint32 depth = 3;
+
+  // 이어서 시작 되는 위치
+  message Cursor {
+    // 커서의 타입
+    //
+    // 영상, 음악, Book, 이미지 이 될 수 있다.
+    CursorType type = 1;
+    // 타입별로 다른 값이 지정 된다.
+    //
+    // 1. 영상과 음악의 경우
+    // ```markdown
+    // timestamp 가 전달된다.
+    // ms 단위의 값이 사용되며 1초의 경우 1000 이다.
+    // ```
+    //
+    // 2. Book 의 경우
+    // ```markdown
+    // 분기점이 발생한 시점의 단어의 Book 전체 텍스트 기준 토큰의 위치가 반환된다.(시작은 1이다. 띄어쓰기 기준으로 분리된다.)
+    //
+    // 예)
+    // 동해물과 백두산이 마르고 닳도록
+    // **위에서 `마르고`에서 분기가 생성**된다면 current의 값은 3이다.
+    // ```
+    //
+    // 3. 이미지 의 경우
+    // ```markdown
+    // 이미지의 경우 파일의 위치가 반환된다(시작은 1이다.)
+    //
+    // ```
+    uint64 current = 2;
+  }
+
+  Cursor cursor = 4;
+}
+
+// 해당 분기점의 선택률을 시각적으로 보여주기 위해 필요한 정보이다.
+message BranchTree {
+  // 원본 포스트 정보
+  string origin_post_id = 1;
+  // 하위 분기점들의 총 선택 횟수
+  uint64 node_select_count = 2;
+  // 하위 분기점 정보
+  repeated BranchTreeNode node = 3;
+}
+
+// BranchTreeNode 는 분기점 정보이다.
+//
+// 분기점의 DB 테이블중에는 해당 사용자가 선택해서 봤는지에 대한 정보가 있어야 한다.
+message BranchTreeNode {
+  // 해당 노드의 고유 id
+  string node_id = 1;
+  // 상위 노드 id
+  string parent_node_id = 2;
+  // 해당 노드의 post id
+  string post_id = 3;
+  // 해당 노드가 선택된 횟수
+  uint64 select_count = 4;
+  // 해당 노드의 연결된 분기점의 명칭
+  string title = 5;
+  // post에 지정된 썸네일 이미지
+  string thumbnail_image_url = 6;
+  // post 타입
+  PostType type = 7;
+  // 총 좋아요 수
+  uint64 like_count = 8;
+  // 사용자에게 표시 유무
+  //
+  // 사용자가 방문한 경우에만 프론트에서 표시한다.
+  bool is_active = 9;
+}
+
+// BranchInteractiveInfo는 현재 보고 있는 Post의 분기점들의 상호작용 정보이다.
+message BranchInteractiveInfo {
+  // 해당 상호작용을 클릭했을 때, 팝업 형태로 뜨는지, 아니면 링크로 이동되는지 정보이다.
+  //
+  // true 인 경우 링크로 이동
+  // false 인 경우 popup형태로 뜬다.
+  bool is_redirect = 1;
+
+  // 연결된 포스트의 요약 정보
+  PostSummary post_info = 2;
+
+  message VideoPosition {
+    // 상호작용 요소 표시 시작 시간 (ms 단위)
+    uint64 start_timestamp = 1;
+    // 상호작용 요소 표시 시간 (ms 단위)
+    //
+    // default: 5초 = 5000
+    // max: 10초 = 10000 (이 이상 설정은 불가능하다.)
+    uint64 duration = 2;
+    // 비율 좌표는 해당 영상 콘텐츠의 가로 세로 최댓값을 100으로 고정하여 계산한다.
+    //
+    // 값은 소숫점 첫째 자리까지 인정된다. 나머지는 반올림 한다.
+    // 예를들어 1080p의 영상의 x=640 인 경우 33.3 이 된다.
+    float x = 3;
+    // 비율 좌표는 해당 영상 콘텐츠의 가로 세로 최댓값을 100으로 고정하여 계산한다.
+    //
+    // 값은 소숫점 첫째 자리까지 인정된다. 나머지는 반올림 한다.
+    // 예를들어 1080p의 영상의 x=640 인 경우 33.3 이 된다.
+    float y = 4;
+  }
+  message AudioPosition {
+    // 상호작용 요소 표시 시작 시간 (ms 단위)
+    uint64 start_timestamp = 1;
+    // 상호작용 요소 표시 시간 (ms 단위)
+    //
+    // default: 5초 = 5000
+    // max: 10초 = 10000 (이 이상 설정은 불가능하다.)
+    uint64 duration = 2;
+  }
+  message ImagePosition {
+    // 인터렉티브를 표시할 image의 순서
+    uint32 order = 1;
+    // 비율 좌표는 해당 이미지 콘텐츠의 가로 세로 최댓값을 100으로 고정하여 계산한다.
+    //
+    // 값은 소숫점 첫째 자리까지 인정된다. 나머지는 반올림 한다.
+    // 예를들어 1080p의 이미지의 x=640 인 경우 33.3 이 된다.
+    float x = 3;
+    // 비율 좌표는 해당 영상 콘텐츠의 가로 세로 최댓값을 100으로 고정하여 계산한다.
+    //
+    // 값은 소숫점 첫째 자리까지 인정된다. 나머지는 반올림 한다.
+    // 예를들어 1080p의 이미지의 x=640 인 경우 33.3 이 된다.
+    float y = 4;
+  }
+  message BookPosition {
+    // 단어의 위치
+    //
+    // ```markdown
+    // 분기점이 발생한 시점의 단어의 Book 전체 텍스트 기준 토큰의 위치가 반환된다.(시작은 1이다. 띄어쓰기 기준으로 분리된다.)
+    //
+    // 예)
+    // 동해물과 백두산이 마르고 닳도록
+    // **위에서 `마르고`에서 분기가 생성**된다면 word_order의 값은 3이다.
+    // ```
+    uint32 word_order = 1;
+    // 현재 word_order가 가르키고 있는 단어
+    //
+    // 만약 해당 값이 일치하지 않는 경우는 원본 사용자가 컨텐츠를 변경했을때 이다.
+    // 이 경우 26.06.12 기준 원본의 수정일로부터 1주일간 표시후 변경에 없다면 제거된다.
+    string word = 2;
+  }
+
+  // 현재 type에 따라 표시되는 정보이다.
+  oneof position {
+    VideoPosition video = 3;
+    AudioPosition audio = 4;
+    ImagePosition image = 5;
+    BookPosition book = 6;
+  }
 }
