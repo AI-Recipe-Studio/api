@@ -43,7 +43,7 @@ message LoginWithCallbackCodeRequest {
 message LoginWithCallbackCodeResponse {}
 
 message ChangeCurrentStudioRequest {
-  // 전환하고자 하는 스튜디오 명칭
+  // 전환하고자 하는 스튜디오 ID
   string studio_id = 1;
   string csrf_token = 2;
 }
@@ -74,6 +74,9 @@ message CheckAuthResponse {
   bool is_login = 1;
 }
 
-message LogoutRequest {}
+message LogoutRequest {
+  // CSRF 토큰
+  string csrf_token = 1;
+}
 
 message LogoutResponse {}
