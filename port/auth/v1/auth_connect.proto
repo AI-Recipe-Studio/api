@@ -19,10 +19,14 @@ service AuthService {
   // GetSession 현재 세션 정보를 확인한다.
   //
   // account 정보와 스튜디오 정보를 반환한다.
-  rpc GetSession(GetSessionRequest) returns (GetSessionResponse);
+  rpc GetSession(GetSessionRequest) returns (GetSessionResponse) {
+    option idempotency_level = NO_SIDE_EFFECTS;
+  }
 
   // CheckAuth 로그인 유무만 확인한다.
-  rpc CheckAuth(CheckAuthRequest) returns (CheckAuthResponse);
+  rpc CheckAuth(CheckAuthRequest) returns (CheckAuthResponse) {
+    option idempotency_level = NO_SIDE_EFFECTS;
+  }
 
   // Logout SLO 로그아웃을 진행한다.
   //
