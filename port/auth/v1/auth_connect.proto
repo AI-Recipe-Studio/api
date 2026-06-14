@@ -1,0 +1,79 @@
+syntax = "proto3";
+
+package port.auth.v1;
+
+import "core/auth/v1/auth_message.proto";
+import "core/auth/v1/studio_message.proto";
+import "port/studio/v1/studio_models.proto";
+
+service AuthService {
+  // LoginWithCallbackCode는 OIDC 인증을 통해 받은 코드를 전달하여 session 정보를 얻는다.
+  rpc LoginWithCallbackCode(LoginWithCallbackCodeRequest) returns (LoginWithCallbackCodeResponse);
+
+  // ChangeCurrentStudio는 현재 선택된 스튜디오 정보를 변경한다.
+  // 기본 값은 본인의 스튜디오이다.
+  //
+  // 사용자는 여러 스튜디오를 가질 수 있기 때문에 context 변경 기능이 필요하다.
+  rpc ChangeCurrentStudio(ChangeCurrentStudioRequest) returns (ChangeCurrentStudioResponse);
+
+  // GetSession 현재 세션 정보를 확인한다.
+  //
+  // account 정보와 스튜디오 정보를 반환한다.
+  rpc GetSession(GetSessionRequest) returns (GetSessionResponse);
+
+  // CheckAuth 로그인 유무만 확인한다.
+  rpc CheckAuth(CheckAuthRequest) returns (CheckAuthResponse);
+
+  // Logout SLO 로그아웃을 진행한다.
+  //
+  // 현재 모든 세션이 로그아웃 된다.
+  rpc Logout(LogoutRequest) returns (LogoutResponse);
+}
+
+message LoginWithCallbackCodeRequest {
+  // idp 에서 발급 받은 코드
+  string code = 1;
+  // OAuth2 인증 요청 시 사용했던 redirect uri
+  string redirect_uri = 2;
+  // CSRF 토큰
+  string csrf_token = 3;
+}
+
+// LoginWithCallbackCodeResponse 로그인 된 정보를 쿠키를 통해 전달한다.
+message LoginWithCallbackCodeResponse {}
+
+message ChangeCurrentStudioRequest {
+  // 전환하고자 하는 스튜디오 명칭
+  string studio_id = 1;
+  string csrf_token = 2;
+}
+
+message ChangeCurrentStudioResponse {
+  // 현재 선택된 스튜디오의 정보
+  port.studio.v1.OwnerStudio studio_info = 1;
+  // 현재 선택된 스튜디오의 플랜 정보
+  core.auth.v1.PlanInfo plan_info = 2;
+}
+
+message GetSessionRequest {}
+
+message GetSessionResponse {
+  core.auth.v1.AccountInfo account_info = 1;
+  // 현재 선택된 스튜디오의 정보
+  port.studio.v1.OwnerStudio studio_info = 2;
+  // 현재 선택된 스튜디오의 플랜 정보
+  core.auth.v1.PlanInfo plan_info = 3;
+
+  // TODO: RBAC 관련 내용 추가
+}
+
+message CheckAuthRequest {}
+
+message CheckAuthResponse {
+  // 정상적으로 로그인인 된 경우 true
+  bool is_login = 1;
+}
+
+message LogoutRequest {}
+
+message LogoutResponse {}
