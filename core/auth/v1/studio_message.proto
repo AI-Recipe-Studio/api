@@ -17,18 +17,26 @@ message Studio {
 enum PlanType {
   // 명시적 에러 발생
   PLAN_TYPE_UNSPECIFIED = 0;
+  // 기본 제공 인원 : 1명
+  // 추가 인원 할당 불가
   PLAN_TYPE_FREE = 1;
-
+  // 기본 제공 인원 : 1명
+  // 추가 인원당 10$
   PLAN_TYPE_DEMO = 2;
   // 추후 학생 할인 등
+  // 기본 제공 인원 : 1명
+  // 추가 인원당 10$
   PLAN_TYPE_STUDENT = 3;
-
+  // 기본 제공 인원 : 1명
+  // 추가 인원당 10$
   PLAN_TYPE_BASIC = 5;
-
+  // 기본 제공 인원 : 3명
+  // 추가 인원당 8$
   PLAN_TYPE_CREATOR = 6;
-
+  // 기본 제공 인원 : 5명
+  // 추가 인원당 5$
   PLAN_TYPE_PRO = 9;
-
+  // 협의 필요
   PLAN_TYPE_ENTERPRISE = 15;
 }
 
@@ -38,17 +46,15 @@ message PlanTypeInfo {
 
   // metadata
 
-  // 최대 포함 인원
+  // 기본 제공 사용자 수
+  uint32 default_crew_amount = 10;
+  // 플랜별 최대 crew 수
   //
-  // 각 플랜별로 역할 설정 범위가 다르다.
-  // 예를 들어 BASIC의 경우 수정, 삭제 권한이 있는 worker 역할군만 할당할 수 있다.
-  // CREATOR의 경우 수정 삭제 권한이 있는 manager 1명과 수정 권한만 존재하는 worker 역할군을 할당할 수 있다.
-  // PRO 플랜의 경우 파일별 접근 권한이 다른 manager 3명 및 수정 권한이 있는 worker 역할군을 할당할 수 있다.
-  // ENTERPRISE 플랜의 경우 역할군을 직접 커스텀 할 수 있다.
-  uint32 max_crew_amount = 10;
+  // FREE 플랜의 경우 1로 고정된다.
+  uint32 max_crew_amount = 11;
   // 구독시 제공되는 크레딧 정보
   // 1$ = 1e6(1,000,000) 크레딧으로 환산
-  uint64 built_in_credit = 11;
+  uint64 built_in_credit = 12;
 }
 
 // PaymentStatusType는 결제 상태를 관리하기 위한 enum 이다.
