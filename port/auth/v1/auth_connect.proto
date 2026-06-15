@@ -39,7 +39,6 @@ message LoginWithCallbackCodeRequest {
   string code = 1;
   // OAuth2 인증 요청 시 사용했던 redirect uri
   string redirect_uri = 2;
-  // CSRF 토큰
   string csrf_token = 3;
 }
 
@@ -62,6 +61,7 @@ message ChangeCurrentStudioResponse {
 message GetSessionRequest {}
 
 message GetSessionResponse {
+  // 계정 정보
   core.auth.v1.AccountInfo account_info = 1;
   // 현재 선택된 스튜디오의 정보
   port.studio.v1.OwnerStudio studio_info = 2;
@@ -79,7 +79,6 @@ message CheckAuthResponse {
 }
 
 message LogoutRequest {
-  // CSRF 토큰
   string csrf_token = 1;
 }
 
