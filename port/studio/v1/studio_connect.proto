@@ -1,0 +1,55 @@
+syntax = "proto3";
+
+package port.studio.v1;
+
+service StudioService {
+  // CreateStudio
+  rpc CreateStudio(CreateStudioRequest) returns (CreateStudioResponse);
+
+  // GetStudioByUID
+  //
+  // studio의 uid를 통해 정보를 조회한다.
+  // 만약 본인이 소유한 스튜디오라면 owner 응답이 전달 된다.
+  rpc GetStudioByUID(GetStudioByUIDRequest) returns (GetStudioByUIDResponse) {
+    option idempotency_level = NO_SIDE_EFFECTS;
+  }
+
+  // GetOwnStudioList
+  //
+  // 현재 로그인한 계정 기준으로 본인이 속한 스튜디오 리스트를 조회할 수 있다.
+  rpc GetOwnStudioList(GetOwnStudioListRequest) returns (GetOwnStudioListResponse) {
+    option idempotency_level = NO_SIDE_EFFECTS;
+  }
+
+  // UpdateStudioByID
+  rpc UpdateStudioByID(UpdateStudioByIDRequest) returns (UpdateStudioByIDResponse);
+
+  // DeleteStudioInfo
+  rpc DeleteStudioByID(DeleteStudioByIDRequest) returns (DeleteStudioByIDResponse);
+}
+
+message CreateStudioRequest {
+  string csrf_token = 1;
+}
+
+message CreateStudioResponse {}
+
+message GetStudioByUIDRequest {}
+
+message GetStudioByUIDResponse {}
+
+message GetOwnStudioListRequest {}
+
+message GetOwnStudioListResponse {}
+
+message UpdateStudioByIDRequest {
+  string csrf_token = 1;
+}
+
+message UpdateStudioByIDResponse {}
+
+message DeleteStudioByIDRequest {
+  string csrf_token = 1;
+}
+
+message DeleteStudioByIDResponse {}

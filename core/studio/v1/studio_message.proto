@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package core.studio.v1;
+
+import "core/auth/v1/auth_message.proto";
+import "core/rbac/v1/rbac_message.proto";
+import "google/protobuf/timestamp.proto";
+
+message Studio {
+  string id = 1;
+  string name = 2;
+  string description = 3;
+  string region = 4;
+
+  google.protobuf.Timestamp created_at = 10;
+  google.protobuf.Timestamp updated_at = 11;
+  google.protobuf.Timestamp deleted_at = 12;
+}
+
+message CrewInfo {
+  // 대상 스튜디오 id
+  string studio_id = 1;
+  // 초대된 유저 정보
+  core.auth.v1.AccountInfo account_info = 2;
+  // 부여된 권한 정보
+  repeated core.rbac.v1.Role role = 3;
+
+  google.protobuf.Timestamp created_at = 10;
+  google.protobuf.Timestamp updated_at = 11;
+  google.protobuf.Timestamp deleted_at = 12;
+
+  // TODO: 추후 할당량 제한을 추가할 수 도 있다.
+}
