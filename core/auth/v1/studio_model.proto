@@ -8,6 +8,8 @@ message Studio {
   string id = 1;
   string name = 2;
   string description = 3;
+  // 지역 정보
+  string region = 4;
 
   google.protobuf.Timestamp created_at = 10;
   google.protobuf.Timestamp updated_at = 11;

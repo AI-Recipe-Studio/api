@@ -2,8 +2,8 @@ syntax = "proto3";
 
 package core.studio.v1;
 
-import "core/auth/v1/auth_message.proto";
-import "core/rbac/v1/rbac_message.proto";
+import "core/auth/v1/auth_model.proto";
+import "core/rbac/v1/rbac_model.proto";
 import "google/protobuf/timestamp.proto";
 
 message Studio {

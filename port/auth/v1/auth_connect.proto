@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package port.auth.v1;
 
-import "core/auth/v1/auth_message.proto";
-import "core/auth/v1/studio_message.proto";
-import "port/studio/v1/studio_models.proto";
+import "core/auth/v1/auth_model.proto";
+import "core/auth/v1/studio_model.proto";
+import "port/studio/v1/studio_model.proto";
 
 service AuthService {
   // LoginWithCallbackCode는 OIDC 인증을 통해 받은 코드를 전달하여 session 정보를 얻는다.
