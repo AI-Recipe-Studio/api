@@ -32,13 +32,21 @@ enum PermissionType {
   PERMISSION_TYPE_OWNER = 11;
 }
 
+// 역할 권한 서비스 스코프
+enum RoleServiceScope {
+  ROLE_SERVICE_SCOPE_UNSPECIFIED = 0;
+  ROLE_SERVICE_SCOPE_PORT = 1;
+  ROLE_SERVICE_SCOPE_CRAFT = 2;
+  ROLE_SERVICE_SCOPE_SHOP = 3;
+}
+
 message Role {
   // 권한을 부여한 스튜디오 id
   string studio_id = 1;
   // 권한이 부여된 계정 id
   string account_id = 2;
-  // 권한 인정 범위
-  string scope = 3;
+  // 권한 인정 서비스 범위
+  RoleServiceScope service_scope = 3;
   // 보유 권한
   PermissionType permission = 4;
 

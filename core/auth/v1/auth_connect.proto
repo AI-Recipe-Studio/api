@@ -4,8 +4,14 @@ package core.auth.v1;
 
 import "buf/validate/validate.proto";
 import "core/auth/v1/auth_model.proto";
+import "core/rbac/v1/rbac_model.proto";
 
 service AccountService {
+  // 현 계정에서 연결된 서비스 리스트 조회
+  rpc GetAccountLinkedServiceList(GetAccountLinkedServiceListRequest) returns (GetAccountLinkedServiceListResponse) {
+    option idempotency_level = NO_SIDE_EFFECTS;
+  }
+
   // 서비스별 계정 상태 조회
   rpc GetAccountInfoByService(GetAccountInfoByServiceRequest) returns (GetAccountInfoByServiceResponse) {
     option idempotency_level = NO_SIDE_EFFECTS;
@@ -13,16 +19,9 @@ service AccountService {
 }
 
 message GetAccountInfoByServiceRequest {
-  // 대상 서비스명칭을 넣는다.
-  //
-  // [ port, craft, shop ]
-  string service_name = 1 [(buf.validate.field).string = {
-    in: [
-      "PORT",
-      "CRAFT",
-      "SHOP"
-    ]
-  }];
+  // 요청 서비스 스코프 정보
+  // port 서비스에서 요청하는 경우 `ROLE_SERVICE_SCOPE_PORT` 이다.
+  core.rbac.v1.RoleServiceScope service_scope = 1;
 }
 
 message GetAccountInfoByServiceResponse {
@@ -31,4 +30,11 @@ message GetAccountInfoByServiceResponse {
 
   // 계정 정보
   AccountInfo account_info = 2;
+}
+
+message GetAccountLinkedServiceListRequest {}
+
+message GetAccountLinkedServiceListResponse {
+  // 활성화된 서비스 리스트를 받는다.
+  repeated core.rbac.v1.RoleServiceScope linked_service_scope_list = 1;
 }
