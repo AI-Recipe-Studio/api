@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package port.comment.v1;
 
-import "core/common/v1/common_models.proto";
+import "core/common/v1/common_model.proto";
 import "google/protobuf/timestamp.proto";
 
 // Comment는 Post 의 댓글이다.

@@ -1,0 +1,56 @@
+syntax = "proto3";
+
+package core.rbac.v1;
+
+import "google/protobuf/timestamp.proto";
+
+enum ScopeType {
+  SCOPE_TYPE_UNSPECIFIED = 0;
+  // 포트 서비스용
+  SCOPE_TYPE_PORT = 1;
+  // 크래프트 서비스
+  SCOPE_TYPE_CRAFT = 2;
+  // SHOP 서비스
+  SCOPE_TYPE_SHOP = 3;
+}
+
+// PermissionType 은 권한 정보 이다.
+//
+// 더 높은 상위 권한은 하위 권한들을 포합한다.
+// WRITE 의 경우 READ 권한을 포함한다.
+// MANAGER의 경우 WRITE와 READ 권한을 포함한다.
+enum PermissionType {
+  PERMISSION_TYPE_UNSPECIFIED = 0;
+
+  PERMISSION_TYPE_READ = 1;
+  // WRITE 의 경우 READ 권한을 포함한다.
+  PERMISSION_TYPE_WRITE = 2;
+
+  // MANAGER의 경우 WRITE와 READ 권한을 포함한다.
+  PERMISSION_TYPE_MANAGER = 10;
+  // 소유자 - 모든 행동에 제약이 없다.
+  PERMISSION_TYPE_OWNER = 11;
+}
+
+// 역할 권한 서비스 스코프
+enum RoleServiceScope {
+  ROLE_SERVICE_SCOPE_UNSPECIFIED = 0;
+  ROLE_SERVICE_SCOPE_PORT = 1;
+  ROLE_SERVICE_SCOPE_CRAFT = 2;
+  ROLE_SERVICE_SCOPE_SHOP = 3;
+}
+
+message Role {
+  // 권한을 부여한 스튜디오 id
+  string studio_id = 1;
+  // 권한이 부여된 계정 id
+  string account_id = 2;
+  // 권한 인정 서비스 범위
+  RoleServiceScope service_scope = 3;
+  // 보유 권한
+  PermissionType permission = 4;
+
+  google.protobuf.Timestamp created_at = 10;
+  google.protobuf.Timestamp updated_at = 11;
+  google.protobuf.Timestamp deleted_at = 12;
+}

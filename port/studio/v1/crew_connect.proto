@@ -1,0 +1,48 @@
+syntax = "proto3";
+
+package port.studio.v1;
+
+import "core/rbac/v1/rbac_model.proto";
+import "core/studio/v1/studio_model.proto";
+
+service CrewService {
+  // 특정 스튜디오 내의 모든 권한을 조회
+  //
+  // 해당 스튜디오의 구성원이라면 조회 할 수 있다.
+  rpc GetCrewListByStudioID(GetCrewListByStudioIDRequest) returns (GetCrewListByStudioIDResponse) {
+    option idempotency_level = NO_SIDE_EFFECTS;
+  }
+
+  // GetMyRoleByStudioID 사용자 본인이 해당 스튜디오에서 가진 권한을 조회
+  rpc GetMyRoleByStudioID(GetMyRoleByStudioIDRequest) returns (GetMyRoleByStudioIDResponse) {
+    option idempotency_level = NO_SIDE_EFFECTS;
+  }
+
+  // LeaveCrewByStudioID 사용자가 직접 Crew 를 나가는 경우
+  rpc LeaveCrewByStudioID(LeaveCrewByStudioIDRequest) returns (LeaveCrewByStudioIDResponse);
+}
+
+message GetCrewListByStudioIDRequest {
+  string studio_id = 1;
+}
+
+message GetCrewListByStudioIDResponse {
+  string studio_id = 1;
+  repeated core.studio.v1.CrewInfo crew_info_list = 2;
+}
+
+message GetMyRoleByStudioIDRequest {
+  string studio_id = 1;
+}
+
+message GetMyRoleByStudioIDResponse {
+  string studio_id = 1;
+  core.rbac.v1.Role role = 2;
+}
+
+message LeaveCrewByStudioIDRequest {
+  string csrf_token = 1;
+  string studio_id = 2;
+}
+
+message LeaveCrewByStudioIDResponse {}

@@ -1,0 +1,45 @@
+syntax = "proto3";
+
+package core.auth.v1;
+
+import "buf/validate/validate.proto";
+import "core/auth/v1/auth_model.proto";
+import "core/rbac/v1/rbac_model.proto";
+
+service AccountService {
+  // 현 계정에서 연결된 서비스 리스트 조회
+  rpc GetAccountLinkedServiceList(GetAccountLinkedServiceListRequest) returns (GetAccountLinkedServiceListResponse) {
+    option idempotency_level = NO_SIDE_EFFECTS;
+  }
+
+  // 서비스별 계정 상태 조회
+  rpc GetAccountInfoByService(GetAccountInfoByServiceRequest) returns (GetAccountInfoByServiceResponse) {
+    option idempotency_level = NO_SIDE_EFFECTS;
+  }
+}
+
+message GetAccountInfoByServiceRequest {
+  // 요청 서비스 스코프 정보
+  // port 서비스에서 요청하는 경우 `ROLE_SERVICE_SCOPE_PORT` 이다.
+  core.rbac.v1.RoleServiceScope service_scope = 1 [(buf.validate.field).enum = {
+    // enum에 정의된 값만 허용됨 (정의되지 않은 숫자값은 통과되지 않음)
+    defined_only: true
+    // 0 인 기본값은 실패함
+    not_in: [0]
+  }];
+}
+
+message GetAccountInfoByServiceResponse {
+  // 만약 status가 ACCOUNT_STATUS_BY_SERVICE_TYPE_OK 가 아닌경우 해당 서비스 전용 가입 로직을 타게 한다.
+  AccountStatusByServiceType status = 1;
+
+  // 계정 정보
+  AccountInfo account_info = 2;
+}
+
+message GetAccountLinkedServiceListRequest {}
+
+message GetAccountLinkedServiceListResponse {
+  // 활성화된 서비스 리스트를 받는다.
+  repeated core.rbac.v1.RoleServiceScope linked_service_scope_list = 1;
+}

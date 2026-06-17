@@ -1,0 +1,77 @@
+// TODO: 전체적인 request, response 확정이 필요
+syntax = "proto3";
+
+package port.studio.v1;
+
+import "port/studio/v1/studio_model.proto";
+
+service StudioService {
+  // CreateStudio
+  //
+  // 스튜디오 생성
+  rpc CreateStudio(CreateStudioRequest) returns (CreateStudioResponse);
+
+  // GetStudioByUID
+  //
+  // studio의 uid를 통해 정보를 조회한다.
+  // 만약 본인이 소유한 스튜디오라면 owner 응답이 전달 된다.
+  rpc GetStudioByUID(GetStudioByUIDRequest) returns (GetStudioByUIDResponse) {
+    option idempotency_level = NO_SIDE_EFFECTS;
+  }
+
+  // GetOwnStudioList
+  //
+  // 현재 로그인한 계정 기준으로 본인이 속한 스튜디오 리스트를 조회할 수 있다.
+  rpc GetOwnStudioList(GetOwnStudioListRequest) returns (GetOwnStudioListResponse) {
+    option idempotency_level = NO_SIDE_EFFECTS;
+  }
+
+  // UpdateStudioByUID
+  //
+  // UID를 기반으로 스튜디오 정보를 업데이트 한다.
+  rpc UpdateStudioByUID(UpdateStudioByUIDRequest) returns (UpdateStudioByUIDResponse);
+
+  // DeleteStudioByUID
+  //
+  // UID를 기반으로 스튜디오를 삭제한다.
+  // 스튜디오 삭제의 경우 OWNER만 가능하다.
+  rpc DeleteStudioByUID(DeleteStudioByUIDRequest) returns (DeleteStudioByUIDResponse);
+}
+
+message CreateStudioRequest {
+  string csrf_token = 1;
+}
+
+message CreateStudioResponse {}
+
+message GetStudioByUIDRequest {
+  // 조회하고자 하는 스튜디오의 고유 uid
+  string uid = 1;
+}
+
+message GetStudioByUIDResponse {
+  Studio studio = 1;
+}
+
+message GetOwnStudioListRequest {}
+
+message GetOwnStudioListResponse {
+  repeated Studio studio_list = 1;
+}
+
+message UpdateStudioByUIDRequest {
+  string csrf_token = 1;
+  string uid = 2;
+}
+
+message UpdateStudioByUIDResponse {}
+
+message DeleteStudioByUIDRequest {
+  string csrf_token = 1;
+  string uid = 2;
+
+  // 삭제를 위해 추가적으로 받는 필드
+  string studio_name = 3;
+}
+
+message DeleteStudioByUIDResponse {}

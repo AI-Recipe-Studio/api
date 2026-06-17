@@ -3,8 +3,8 @@ syntax = "proto3";
 package port.search.v1;
 
 import "google/protobuf/timestamp.proto";
-import "port/post/v1/post_models.proto";
-import "port/studio/v1/studio_models.proto";
+import "port/post/v1/post_model.proto";
+import "port/studio/v1/studio_model.proto";
 
 // SearchType 검색 구분
 enum SearchType {

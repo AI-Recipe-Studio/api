@@ -35,3 +35,14 @@ message AccountInfo {
   google.protobuf.Timestamp updated_at = 11;
   google.protobuf.Timestamp deleted_at = 12;
 }
+
+// AccountStatusByServiceType 각 서비스별(PORT, CRAFT, SHOP 등)로 초기화가 안되어 있는 계정인 경우를 처리하기 위한 Enum
+enum AccountStatusByServiceType {
+  ACCOUNT_STATUS_BY_SERVICE_TYPE_UNSPECIFIED = 0;
+  // 선택된 서비스를 정상적으로 사용 가능한 상태
+  ACCOUNT_STATUS_BY_SERVICE_TYPE_OK = 1;
+  // 선택된 서비스를 위한 최초 서비스 가입이 진행되지 않은 상태
+  //
+  // 플랫폼 코어에는 Account가 있지만 서비스(port)에는 연결된 정보가 없는 상태
+  ACCOUNT_STATUS_BY_SERVICE_TYPE_ACTION_REQUIRED = 2;
+}
