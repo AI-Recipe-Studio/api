@@ -3,7 +3,7 @@ syntax = "proto3";
 package port.studio.v1;
 
 import "core/rbac/v1/rbac_model.proto";
-import "core/studio/v1/plan_model.proto";
+import "core/studio/v1/studio_model.proto";
 
 service CrewService {
   // 특정 스튜디오 내의 모든 권한을 조회
@@ -28,7 +28,7 @@ message GetCrewListByStudioIDRequest {
 
 message GetCrewListByStudioIDResponse {
   string studio_id = 1;
-  repeated core.studio.v1.CreditInfo crew_info_list = 2;
+  repeated core.studio.v1.CrewInfo crew_info_list = 2;
 }
 
 message GetMyRoleByStudioIDRequest {
