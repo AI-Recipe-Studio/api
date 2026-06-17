@@ -3,7 +3,7 @@ syntax = "proto3";
 package port.auth.v1;
 
 import "core/auth/v1/auth_model.proto";
-import "core/auth/v1/studio_model.proto";
+import "core/studio/v1/plan_model.proto";
 import "port/studio/v1/studio_model.proto";
 
 service AuthService {
@@ -55,7 +55,7 @@ message ChangeCurrentStudioResponse {
   // 현재 선택된 스튜디오의 정보
   port.studio.v1.OwnerStudio studio_info = 1;
   // 현재 선택된 스튜디오의 플랜 정보
-  core.auth.v1.PlanInfo plan_info = 2;
+  core.studio.v1.PlanInfo plan_info = 2;
 }
 
 message GetSessionRequest {}
@@ -66,7 +66,7 @@ message GetSessionResponse {
   // 현재 선택된 스튜디오의 정보
   port.studio.v1.OwnerStudio studio_info = 2;
   // 현재 선택된 스튜디오의 플랜 정보
-  core.auth.v1.PlanInfo plan_info = 3;
+  core.studio.v1.PlanInfo plan_info = 3;
 
   // TODO: RBAC 관련 내용 추가
 }
