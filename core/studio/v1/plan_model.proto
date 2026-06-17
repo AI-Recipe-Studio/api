@@ -43,7 +43,7 @@ enum PlanType {
   // 기본 제공 인원 : 5명
   // 추가 인원당 5$
   PLAN_TYPE_PRO = 9;
-  // 협의 필요
+  // ENTERPRISE 플랜은 해당 기업과 별도 협의
   PLAN_TYPE_ENTERPRISE = 15;
 }
 
