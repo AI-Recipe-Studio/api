@@ -85,6 +85,8 @@
 
 - Python등 스크립트는 꼭 필요한 경우가 아니라면 사용하지 않는다. 어떤 작업에서도 Python등 스크립트를 생성, 실행, 의존하지 않도록 해야 하며 불가피하게 사용해야한다면 prompt로 물어본 후 허가가
   나면 사용한다.
+- GitHub 이슈를 기반으로 도출한 플랜 문서는 `.agent/spec/issue/{이슈번호}/{생성순서}_plan.md` 형식으로 저장한다.
+  예: `.agent/spec/issue/19/01_plan.md`
 
 ## Child DOX Index
 
