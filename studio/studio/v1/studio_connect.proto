@@ -1,9 +1,9 @@
 // TODO: 전체적인 request, response 확정이 필요
 syntax = "proto3";
 
-package port.studio.v1;
+package studio.studio.v1;
 
-import "port/studio/v1/studio_model.proto";
+import "studio/service_profile/v1/service_profile_model.proto";
 
 service StudioService {
   // CreateStudio
@@ -50,13 +50,13 @@ message GetStudioByUIDRequest {
 }
 
 message GetStudioByUIDResponse {
-  Studio studio = 1;
+  .studio.service_profile.v1.Studio studio = 1;
 }
 
 message GetOwnStudioListRequest {}
 
 message GetOwnStudioListResponse {
-  repeated Studio studio_list = 1;
+  repeated .studio.service_profile.v1.Studio studio_list = 1;
 }
 
 message UpdateStudioByUIDRequest {

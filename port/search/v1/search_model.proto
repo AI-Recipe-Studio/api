@@ -4,7 +4,7 @@ package port.search.v1;
 
 import "google/protobuf/timestamp.proto";
 import "port/post/v1/post_model.proto";
-import "port/studio/v1/studio_model.proto";
+import "studio/service_profile/v1/service_profile_model.proto";
 
 // SearchType 검색 구분
 enum SearchType {
@@ -72,8 +72,8 @@ message SearchResult {
   // oneof 를 사용하여 type에 해당하는 결과를 반환한다.
   oneof view {
     port.post.v1.PostList post_list = 2;
-    port.studio.v1.StudioList studio_list = 3;
-    port.studio.v1.CollectionList collection_list = 4;
+    studio.service_profile.v1.StudioList studio_list = 3;
+    studio.service_profile.v1.CollectionList collection_list = 4;
   }
 
   // 다음 페이지가 존재하는 경우 다음 검색 커서를 반환한다.
