@@ -9,6 +9,7 @@ import "google/protobuf/timestamp.proto";
 // 하위 서비스별로 metadata를 추가하여 사용한다.
 // 예를들어 기본 Studio에는 uid가 존재하지 않지만 service profile에는 uid 필드가 존재한다.
 message Studio {
+  // UUIDv7
   string studio_id = 1;
   // 스튜디오 명칭
   string name = 2;

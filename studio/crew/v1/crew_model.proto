@@ -8,6 +8,7 @@ import "google/protobuf/timestamp.proto";
 
 message CrewInfo {
   // 대상 스튜디오 id
+  // UUIDv7
   string studio_id = 1;
   // 초대된 유저 정보
   core.auth.v1.AccountInfo account_info = 2;
