@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package port.studio.v1;
+package studio.service_profile.v1;
 
 import "core/common/v1/common_model.proto";
 import "google/protobuf/timestamp.proto";

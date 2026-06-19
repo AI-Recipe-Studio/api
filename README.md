@@ -24,13 +24,11 @@ AI Recipe Studio 플렛폼을 구성하는 마이크로서비스 간 통신 인�
 ```text
 ...
 studio/                 # 스튜디오(채널) 플랫폼
-├── studio/             # 스튜디오(채널) 관리 도메인
-│   └── v1/
-│       ├── studio_model.proto   # 순수 핵심 데이터 도메인 모델 (Enum, 구조체)
-│       ├── studio_connect.proto  # 외부 Client 통신용 ConnectRPC 서비스 및 객체
-│       └── studio_event.proto    # 내부 NATS 통신용 (PubSub Event & Request-Reply)
-├── plan/               # 플랜 도메인
-└── crew/               # 크루원 도메인
+├── studio/             # 스튜디오 핵심 모델 및 StudioService
+├── service_profile/    # public/owner studio profile 및 collection 표시 모델
+├── plan/               # 플랜 및 credit 도메인
+├── crew/               # 크루원 도메인
+└── billing/            # 추후 billing 계약 경계
 ...
 ```
 

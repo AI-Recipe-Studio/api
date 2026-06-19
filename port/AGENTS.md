@@ -16,6 +16,7 @@
 - `port` proto는 client/API 경계의 shape를 소유하며 필요한 경우 `core` 타입을 조합한다.
 - `package` 이름은 `port.<domain>.v<version>` 형식을 유지한다.
 - `port` 타입은 다른 `port` 도메인을 import할 수 있지만 순환 import를 만들지 않는다.
+- studio profile, crew, plan, studio service 계약은 `studio/` 타입을 재사용한다.
 - backend 내부 이벤트나 순수 shared model은 기본적으로 `core/`에 둔다.
 - ConnectRPC 서비스 파일은 `*_connect.proto`, 화면/전송 모델 파일은 `*_model.proto` 이름을 사용한다.
 
@@ -33,7 +34,6 @@
 ## Child DOX Index
 
 - `auth/AGENTS.md`: client 인증 session, login, logout, studio switching 서비스 계약.
-- `comment/AGENTS.md`: comment view model.요
+- `comment/AGENTS.md`: comment view model.
 - `post/AGENTS.md`: post, summary, branch, content file view model.
 - `search/AGENTS.md`: search query/result model.
-- `studio/AGENTS.md`: studio API 서비스, crew API 서비스, public/owner studio view model.

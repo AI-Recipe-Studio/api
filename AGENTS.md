@@ -32,6 +32,7 @@
 - 루트 `AGENTS.md`는 저장소 전체 규칙, 사용자 선호, 루트 설정 파일, top-level Child DOX Index를 소유한다.
 - `core/AGENTS.md`는 재사용 가능한 핵심 도메인 모델과 내부 서비스 계약을 소유한다.
 - `port/AGENTS.md`는 외부 클라이언트/프론트엔드 경계의 ConnectRPC 및 화면 지향 모델을 소유한다.
+- `studio/AGENTS.md`는 studio 중심 멀티테넌트 도메인, crew, plan, service profile, billing 경계를 소유한다.
 - 도메인별 `AGENTS.md`는 해당 도메인의 `v1` 패키지와 이후 버전 폴더를 소유한다.
 
 ## Child Doc Shape
@@ -92,3 +93,4 @@
 
 - `core/AGENTS.md`: 재사용 가능한 핵심 도메인 모델, 내부 서비스 계약, 공통 enum/message의 DOX 루트.
 - `port/AGENTS.md`: 외부 클라이언트/프론트엔드용 ConnectRPC 서비스와 화면 지향 모델의 DOX 루트.
+- `studio/AGENTS.md`: studio 중심 멀티테넌트 도메인, crew, plan, service profile, billing 경계의 DOX 루트.

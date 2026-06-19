@@ -12,7 +12,7 @@
 
 - `package` 이름은 `port.search.v1` 형식을 유지한다.
 - 검색 대상, 우선순위, query, result shape는 이 패키지에서 관리한다.
-- 검색 결과에 포함되는 post/studio 표시 정보는 `port/post`, `port/studio` 타입을 재사용한다.
+- 검색 결과에 포함되는 post/studio 표시 정보는 `port/post`, `studio/service_profile` 타입을 재사용한다.
 
 ## Work Guidance
 

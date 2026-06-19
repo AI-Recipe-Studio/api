@@ -3,8 +3,8 @@ syntax = "proto3";
 package port.auth.v1;
 
 import "core/auth/v1/auth_model.proto";
-import "core/studio/v1/plan_model.proto";
-import "port/studio/v1/studio_model.proto";
+import "studio/plan/v1/plan_model.proto";
+import "studio/service_profile/v1/service_profile_model.proto";
 
 service AuthService {
   // LoginWithCallbackCode는 OIDC 인증을 통해 받은 코드를 전달하여 session 정보를 얻는다.
@@ -53,9 +53,9 @@ message ChangeCurrentStudioRequest {
 
 message ChangeCurrentStudioResponse {
   // 현재 선택된 스튜디오의 정보
-  port.studio.v1.OwnerStudio studio_info = 1;
+  studio.service_profile.v1.OwnerStudio studio_info = 1;
   // 현재 선택된 스튜디오의 플랜 정보
-  core.studio.v1.PlanInfo plan_info = 2;
+  studio.plan.v1.PlanInfo plan_info = 2;
 }
 
 message GetSessionRequest {}
@@ -64,9 +64,9 @@ message GetSessionResponse {
   // 계정 정보
   core.auth.v1.AccountInfo account_info = 1;
   // 현재 선택된 스튜디오의 정보
-  port.studio.v1.OwnerStudio studio_info = 2;
+  studio.service_profile.v1.OwnerStudio studio_info = 2;
   // 현재 선택된 스튜디오의 플랜 정보
-  core.studio.v1.PlanInfo plan_info = 3;
+  studio.plan.v1.PlanInfo plan_info = 3;
 
   // TODO: RBAC 관련 내용 추가
 }

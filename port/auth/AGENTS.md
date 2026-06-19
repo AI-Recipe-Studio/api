@@ -12,7 +12,7 @@
 
 - `package` 이름은 `port.auth.v1` 형식을 유지한다.
 - `auth_connect.proto`는 AuthService와 관련 request/response 메시지를 소유한다.
-- 계정 상태, plan, studio view는 core 및 port의 기존 타입을 조합해 사용한다.
+- 계정 상태는 `core/auth`, plan과 studio view는 `studio/` 타입을 조합해 사용한다.
 
 ## Work Guidance
 

@@ -12,7 +12,7 @@
 
 - `package` 이름은 `core.payment.v1` 형식을 유지한다.
 - 결제 gateway 식별, 결제 상태, gateway 표시 정보는 이 도메인에서 관리한다.
-- plan이나 credit 정책 자체는 `core/studio`의 plan model에서 관리한다.
+- plan이나 credit 정책 자체는 `studio/plan`의 plan model에서 관리한다.
 
 ## Work Guidance
 

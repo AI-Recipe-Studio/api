@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package core.studio.v1;
+package studio.plan.v1;
 
 import "core/payment/v1/payment_model.proto";
 import "google/protobuf/timestamp.proto";
